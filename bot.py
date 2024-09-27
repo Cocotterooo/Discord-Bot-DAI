@@ -34,6 +34,7 @@ class MyClient(discord.Client):
 # Creamos un conjunto de intenciones (intents) predeterminado. 
 # Estas intenciones definen los eventos a los que el bot estará atento, como mensajes, miembros, etc.
 intents = discord.Intents.default()
+intents.members = True  # Habilita la intención de recibir eventos relacionados con miembros
 client = MyClient(intents=intents)
 
 
@@ -44,18 +45,19 @@ async def on_ready():
 # Evento cuando un miembro se une al servidor
 @client.event
 async def on_member_join(member):
+    print(f"{member} se ha unido al servidor")
     # Obtener el avatar y el nombre del miembro
-    avatar_url = member.avatar.url
+    avatar_url = member.avatar.url if member.avatar else member.default_avatar.url
     nombre_usuario = member.name
-    image_binary = generate_welcome_image(nombre_usuario, avatar_url)
     # Envia la imagen
     channel = client.get_channel(1288283913181200446) 
     image_binary = generate_welcome_image(nombre_usuario, avatar_url, 'assets/tema_claro_recortado.png')
     if image_binary is None:
         await print(f"Ocurrió un error al generar la imagen de Bienvenida de {nombre_usuario}")
     else:
-        await channel.send(file=discord.File(fp=image_binary, filename='tema_claro_recortado.png'))
+        await channel.send(file=discord.File(fp=image_binary, filename='bienvenida.png'))
         await channel.send(f"<:entrar:1288631392070012960> {member.mention} ¡Bienvenid@ a la **Comunidad Oficial** de la **EEI**! 🎉\n-#       **Delegación de Alumnos** EEI - Uvigo")
+
 
 @client.tree.command(name='bienvenida', description='Imagen de Bienvenida')
 async def ip(interaction: discord.Interaction):
@@ -68,7 +70,7 @@ async def ip(interaction: discord.Interaction):
     if image_binary is None:
         await print(f"Ocurrió un error al generar la imagen de Bienvenida de {nombre_usuario}")
     else:
-        await channel.send(file=discord.File(fp=image_binary, filename='tema_claro_recortado.png'))
+        await channel.send(file=discord.File(fp=image_binary, filename='bienvenida.png'))
         await channel.send(f"<:entrar:1288631392070012960>  ¡Bienvenid@ a la **Comunidad Oficial** de la **EEI**! 🎉\n-#       **Delegación de Alumnos** EEI - Uvigo")
 
 
