@@ -79,7 +79,7 @@ class InstagramAPI():
             print(f"Error al actualizar los likes y comentarios: {e}")
 
 
-instagram = InstagramAPI('IGQWROX2t1bkU0U1NsTmFFc1ZAvUUd0bHlZAemZA6TmJYVTJhSEZAReWFJa3FnakdzcVMwRUk0Mm9jMzdwT1BzY2hpLUJ0TDJIVU40Ym5ZAbG94RDA0YTZA4X2NjTzl4UEliWTBidVFxb0J1M1RNYVI4cGVNNlhHZATFMUzAZD')
+#instagram = InstagramAPI('')
 
 
 #print(instagram.get_num_likes_comments('18032521846722078'))
