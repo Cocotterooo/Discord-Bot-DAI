@@ -14,6 +14,6 @@ def instagram_message_format(permalink: str, caption: str, likes: int, comments:
 
 🔗 [**Nuestro Instagram**]({INSTAGRAM_DAI_ACCOUNT_URL}) **@dai_uvigo**
 
--# ID: {post_id} Actualizado: {date_published} [.]({media_url})
+-# ID: {post_id} [.]({media_url})
 -# **Delegación de alumnos de Industriales** <a:dinkdonk:1289157144436015174> <@&1288263963812958300>
 """

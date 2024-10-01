@@ -1,23 +1,24 @@
 import requests
 from supabase import Client
-
+import instaloader
 
 class InstagramAPI():
     def __init__(self, access_token):
         self.access_token = access_token
+
     @property
     def user_id_username(self):
         url = f"https://graph.instagram.com/me?fields=id,username&access_token={self.access_token}"
         response = requests.get(url)
         if response.status_code != 200:
-            print('Error')
-            exit()
+            print(f'❌Error: user_id_username - al obtener el ID y el nombre de usuario: {response}')
         data = response.json()
         return data
 
     def get_all_posts(self):
         url = f"https://graph.instagram.com/{self.user_id_username['id']}/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink,timestamp&access_token={self.access_token}"
         response = requests.get(url)
+        print(response)
         if response.status_code == 200:
             media_data = response.json()
             return media_data
@@ -32,6 +33,15 @@ class InstagramAPI():
         else:
             return(f"Error: {response.status_code} - {response.text}")
 
+    def get_media_url(self, post_id: int):
+        url = f"https://graph.instagram.com/{post_id}?fields=media_url&access_token={self.access_token}"
+        response = requests.get(url)
+        if response.status_code == 200:
+            return response.json()
+        else:
+            return None
+
+    # BASES DE DATOS
     def save_all_posts(self, supabase: Client):
         try:
             # Iterar sobre todas las publicaciones
@@ -64,24 +74,5 @@ class InstagramAPI():
         except Exception as exception:
             return exception  # Manejo de excepción externa
 
-    def update_likes_comments(self, id_post: int, supabase:Client):
-        try:
-            # Obtener el número de likes y comentarios de la publicación
-            likes_comments = self.get_num_likes_comments(id_post)
-            # Actualizar la base de datos con los nuevos datos
-            print(likes_comments)
-            response = supabase.table("posts").update({
-                "likes_count": likes_comments['like_count'],
-                "comments_count": likes_comments['comments_count']
-            }).eq('id', id_post).execute()
-            print(f"Likes y comentarios actualizados para la publicación {id_post}")
-        except Exception as e:
-            print(f"Error al actualizar los likes y comentarios: {e}")
-
-
-#instagram = InstagramAPI('')
-
-
-#print(instagram.get_num_likes_comments('18032521846722078'))
-
+    
 

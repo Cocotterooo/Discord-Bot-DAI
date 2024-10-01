@@ -8,6 +8,7 @@ from utils.api.instagram.Instagram import InstagramAPI
 from utils.db.authentication import supabase_autenticated
 from utils.periodic_tasks.update_likes_comments import update_likes_comments_db
 from utils.db.get_post_info import get_post_info
+from utils.db.Posts import Post
 
 from config import SERVER_ID, LOG_CHANNEL, WELCOME_CHANNEL, INSTAGRAM_DAI_CHANNEL, instagram_message_format
 
@@ -28,6 +29,7 @@ supabase = supabase_autenticated(DB_URL, DB_API_KEY, DB_EMAIL, DB_EMAIL_PASSWORD
 #! Crear una instancia de Instagram
 INSTAGRAM_API_KEY = os.getenv('INSTAGRAM_API_KEY')
 instagram = InstagramAPI(INSTAGRAM_API_KEY)
+posts = Post(supabase, instagram)
 
 class Bot(discord.Client):
     def __init__(self, *, intents: discord.Intents):
@@ -44,9 +46,10 @@ class Bot(discord.Client):
 
 # Las intenciones definen los eventos a los que el bot estará atento, como mensajes, miembros, etc.
 intents = discord.Intents.default()
-intents.members = True  # Habilita la intención de recibir eventos relacionados con miembros
-intents.messages = True  # Habilita la intención de recibir eventos relacionados con mensajes
-intents.guilds = True  # Habilita la intención de recibir eventos relacionados con servidores
+# Habilita la intención de recibir eventos relacionados con miembros, mensajes y servidores.
+intents.members = True  
+intents.messages = True  
+intents.guilds = True  
 client = Bot(intents=intents)
 
 
@@ -56,7 +59,8 @@ async def on_ready():
     print(f'Bot conectado como {client.user}')
     channel = client.get_channel(LOG_CHANNEL) 
     await channel.send('Estado Bot: **Online** <a:online:1288631919352877097>')
-    await update_likes_comments_db(instagram, supabase, 1800)
+    await posts.renew_all_likes_comments_db(1)
+    await posts.renew_videos_media_url_db(30)
 
 
 # Evento cuando un miembro se une al servidor
