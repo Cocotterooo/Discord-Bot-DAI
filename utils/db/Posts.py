@@ -10,59 +10,56 @@ class Post():
 
     async def update_media_url(self, id_post: int):
         try:
-            media_url = self.instagram.get_media_url(id_post)
+            media_url = await self.instagram.get_media_url(id_post)
             # Actualizar la base de datos con la nueva URL
-            await self.supabase.table("posts").update({
+            self.supabase.table("posts").update({
                 "media_url": media_url['media_url']
             }).eq('id', id_post).execute()
-            print(f"URL de la publicación {id_post} actualizada")
-            return
+            return None
         except Exception as e:
-            print(f"Error al actualizar la URL de la publicación: {e}")
+            print(f"❌Error: update_media_url() - al actualizar media_url de {id_post}: {e}")
             return e
 
-    def renew_videos_media_url_db(self, interval):
-        while interval > 0:
-            asyncio.sleep(interval)
-            print("🔃Actualizando media_url de los posts tipo videos")
-            posts = self.instagram.get_all_posts()
-            for i in posts['data']:
-                if i['media_type'] == 'VIDEO':
-                    try:
-                        self.update_media_url(i['id'])
-                    except Exception as e:
-                        print(f"Error - ID{i['id']}: {e}")
-            print(f"💚URL de los videos actualizados en la Base de Datos")
+    async def renew_media_url_db(self, ):
+        print("🔃Actualizando media_url de los posts")
+        posts = await self.instagram.get_all_posts()
+        for i in posts['data']:
+            try:
+                await self.update_media_url(i['id'])
+            except Exception as e:
+                print(f"❌Error renew_media_url_db() - ID{i['id']}: {e}")
+        print(f"💚media_url de las publicaciones actualizadas")
 
     async def update_likes_comments(self, id_post: int, likes_count: int, comments_count: int):
         try:
-            # Actualizar la base de datos con los nuevos datos
-            print(likes_count, comments_count)
             response = self.supabase.table("posts").update({
                 "likes_count": likes_count,
                 "comments_count": comments_count
             }).eq('id', id_post).execute()
-            print(f"Likes y comentarios actualizados para la publicación {id_post}")
         except Exception:
-            print(f"❌ Error al actualizar los likes y comentarios: {response}")
+            print(f"❌Error: update_likes_comments() - Actualizar los likes y comentarios: {response}")
 
-    async def renew_all_likes_comments_db(self, interval):
-        while interval > 0:
-            await asyncio.sleep(interval)
-            print("🔃Actualizando likes y comentarios")
-            posts = self.instagram.get_all_posts()
-            for i in posts['data']:
-                try:
-                    self.update_likes_comments(i['id'], i['likes_count'], i['comments_count'])
-                except Exception as e:
-                    print(f"❌Error: renew_all_likes_comments_db() - Al intentar actualizar ID: {i['id']} ({i['likes_count']}, {i['comments_count']}): {e}")
+    async def renew_all_likes_comments_db(self):
+        print("🔃Actualizando likes y comentarios")
+        posts = await self.instagram.get_all_posts()
+        error = False
+        for i in posts['data']:
+            try:
+                likes_comments_count = await self.instagram.get_num_likes_comments(i['id'])
+                await self.update_likes_comments(i['id'], likes_comments_count['like_count'], likes_comments_count['comments_count'])
+            except Exception as e:
+                print(f"❌Error: renew_all_likes_comments_db() - Al intentar actualizar ID: {i['id']}: {e}")
+                error = True
+        if not error:
             print(f"💚Likes y comentarios actualizados en la Base de Datos")
+        else:
+            print(f"❌ERROR al actualizar los likes y comentarios")
 
 
-    def save_all_posts(self, all_posts, supabase: Client):
+    async def save_all_posts(self, all_posts, supabase: Client):
         try:
-            for i in self.get_all_posts()['data']: # Itera las publicaciones
-                print("bucle")
+            posts = await self.get_all_posts()['data']
+            for i in posts: # Itera las publicaciones
                 # Verificar si el ID de la publicación ya existe en la base de datos
                 try:
                     result = (supabase
