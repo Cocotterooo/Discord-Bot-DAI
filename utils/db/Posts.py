@@ -1,7 +1,5 @@
 from supabase import Client
 from utils.api.instagram.Instagram import InstagramAPI
-import requests
-import asyncio
 
 class Post():
     def __init__(self, supabase: Client, instagram: InstagramAPI) -> None:
@@ -55,8 +53,7 @@ class Post():
         else:
             print(f"❌ERROR al actualizar los likes y comentarios")
 
-
-    async def save_all_posts(self, all_posts, supabase: Client):
+    async def save_all_posts(self, supabase: Client):
         try:
             posts = await self.get_all_posts()['data']
             for i in posts: # Itera las publicaciones
@@ -83,4 +80,4 @@ class Post():
                 except Exception as e:
                     print(f"Error al realizar la consulta o guardar la publicación: {e}")
         except Exception as exception:
-            return exception  
+            return exception

@@ -13,4 +13,3 @@ async def renew_media_url_task(posts: Post, interval: int):
         await posts.renew_media_url_db()  # Esto se ejecutará cada 10 segundos
         await asyncio.sleep(interval)
     print("🔃 Actualizando media_url de los posts ❌ Deshabilitado")
-

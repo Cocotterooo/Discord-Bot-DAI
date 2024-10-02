@@ -11,6 +11,7 @@ from utils.db.authentication import supabase_autenticated
 from utils.periodic_tasks.renew import renew_all_likes_comments_task, renew_media_url_task
 from utils.db.get_post_info import get_post_info
 from utils.db.Posts import Post
+from utils.db.Discord_instagram_messsage import Dc_insta_msg
 
 from config import SERVER_ID, LOG_CHANNEL, WELCOME_CHANNEL, INSTAGRAM_DAI_CHANNEL, instagram_message_format, instagram_embed
 
@@ -27,6 +28,9 @@ DB_API_KEY: str = os.environ.get("DB_API_KEY")
 DB_EMAIL: str = os.environ.get("DB_EMAIL")
 DB_EMAIL_PASSWORD: str = os.environ.get("DB_EMAIL_PASSWORD")
 supabase = supabase_autenticated(DB_URL, DB_API_KEY, DB_EMAIL, DB_EMAIL_PASSWORD)
+
+#! Crear una instancia de Discord_instagram_messsage
+Dc_insta_msg = Dc_insta_msg(supabase)
 
 #! Crear una instancia de Instagram
 INSTAGRAM_API_KEY = os.getenv('INSTAGRAM_API_KEY')
@@ -103,7 +107,7 @@ async def ip(interaction: discord.Interaction):
     post_id='La ID de la publicación')
 async def instagram_send(interaction: discord.Interaction, post_id: str):
     await interaction.response.defer(thinking=True)  # Indica que se está procesando
-
+    message_id = None
     try:
         post_id = int(post_id)
         data = await get_post_info(post_id, supabase)
@@ -133,6 +137,7 @@ async def instagram_send(interaction: discord.Interaction, post_id: str):
                 embed_message = await channel.send(
                     content='-# <a:dinkdonk:1289157144436015174> <@&1288263963812958300>',
                     embed=embed)
+                message_id = embed_message.id
                 image_files = []
                 try:
                     items =  instagram.get_items_carousel(post_id)
@@ -148,8 +153,6 @@ async def instagram_send(interaction: discord.Interaction, post_id: str):
                     # Envía las imágenes adjuntas
                     await channel.send(files=image_files)
                 # Respuesta con la ID del mensaje
-                await interaction.followup.send(
-                    f'<:correcto:1288631406452412428> Se ha enviado la publicación con id `{post_id}` a <#{INSTAGRAM_DAI_CHANNEL}>. ID del mensaje: `{embed_message.id}`')
             elif type_post == 'VIDEO':
                 embed = instagram_embed(
                     permalink=permalink, 
@@ -165,6 +168,7 @@ async def instagram_send(interaction: discord.Interaction, post_id: str):
                         content='-# <a:dinkdonk:1289157144436015174> <@&1288263963812958300>', 
                         embed=embed
                     )
+                    message_id = embed_message.id
                 except Exception as e:
                     print(f"❌Error: instagram_send() - al enviar el mensaje con embed: {e}")
                     await interaction.followup.send(f'<:no:1288631410558767156> Error al enviar el mensaje con el embed')
@@ -178,10 +182,6 @@ async def instagram_send(interaction: discord.Interaction, post_id: str):
                 except Exception as e:
                     print(f"❌Error: instagram_send() - al obtener o enviar el video: {e}")
                     await interaction.followup.send(f'<:no:1288631410558767156> Error al obtener o enviar el video de la publicación')
-                # Confirmación de envío
-                await interaction.followup.send(
-                    f'<:correcto:1288631406452412428> Se ha enviado la publicación con id `{post_id}` a <#{INSTAGRAM_DAI_CHANNEL}>. ID del mensaje: `{embed_message.id}`'
-                )
             else:
                 embed = instagram_embed(permalink=permalink, 
                                         caption=caption, 
@@ -193,8 +193,15 @@ async def instagram_send(interaction: discord.Interaction, post_id: str):
                 embed_message = await channel.send(
                     content='-# <a:dinkdonk:1289157144436015174> <@&1288263963812958300>',
                     embed=embed)
-                await interaction.followup.send(f'<:correcto:1288631406452412428> Se ha enviado la publicación con id `{post_id}` a <#{INSTAGRAM_DAI_CHANNEL}>. ID del mensaje: `{embed_message.id}`')
-
+                message_id = embed_message.id
+            try:
+                await Dc_insta_msg.save_message_id(message_id, post_id)
+                print(f"✅ID del mensaje almacenado en la DB: {message_id}")
+            except Exception as e:
+                print(f"❌Error: instagram_send() - al almacenar el ID del mensaje en la base de datos: {e}")
+                await interaction.followup.send(f'<:no:1288631410558767156> Error al almacenar el ID del mensaje en la base de datos (La publicación no se actualizará)')
+            await interaction.followup.send(f'<:correcto:1288631406452412428> Se ha enviado la publicación con id `{post_id}` a <#{INSTAGRAM_DAI_CHANNEL}>. ID del mensaje: `{embed_message.id}`')
+            
     except Exception as e:
         await interaction.followup.send(f'<:no:1288631410558767156> Error al enviar la publicación')
         print(f"❌Error: instagram_send() - al enviar la publicación: {e}")
