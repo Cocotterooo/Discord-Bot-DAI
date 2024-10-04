@@ -8,12 +8,12 @@ import io
 from utils.welcome_image import generate_welcome_image
 from utils.api.instagram.Instagram import InstagramAPI 
 from utils.db.authentication import supabase_autenticated
-from utils.periodic_tasks.renew import renew_all_likes_comments_task, renew_media_url_task
+from utils.periodic_tasks.renew import renew_all_likes_comments_task, renew_media_url_task, renew_likes_comments_sended_messages
 from utils.db.get_post_info import get_post_info
 from utils.db.Posts import Post
 from utils.db.Discord_instagram_messsage import Dc_insta_msg
 
-from config import SERVER_ID, LOG_CHANNEL, WELCOME_CHANNEL, INSTAGRAM_DAI_CHANNEL, instagram_message_format, instagram_embed
+from config import SERVER_ID, LOG_CHANNEL, WELCOME_CHANNEL, INSTAGRAM_DAI_CHANNEL, instagram_embed
 
 # Cargar el archivo .env
 load_dotenv()
@@ -67,6 +67,7 @@ async def on_ready():
     await channel.send('Estado Bot: **Online** <a:online:1288631919352877097>')
     asyncio.create_task(renew_all_likes_comments_task(posts, 3600))
     asyncio.create_task(renew_media_url_task(posts, 86400))
+    asyncio.create_task(renew_likes_comments_sended_messages(supabase, 3600))
 
 
 # Evento cuando un miembro se une al servidor
