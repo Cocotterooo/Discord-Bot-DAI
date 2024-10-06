@@ -13,6 +13,9 @@ from utils.db.get_post_info import get_post_info
 from utils.db.Posts import Post
 from utils.db.Discord_instagram_messsage import Dc_insta_msg
 
+from utils.interactions.dai_roles import dai_roles_interaction, setup_commands
+
+
 from config import SERVER_ID, LOG_CHANNEL, WELCOME_CHANNEL, INSTAGRAM_DAI_CHANNEL, instagram_embed
 
 # Cargar el archivo .env
@@ -41,6 +44,7 @@ class Bot(discord.Client):
 
     #* Aquí sincronizamos los comandos de aplicación con el servidor especificado (MY_GUILD).
     async def setup_hook(self):
+        setup_commands(self)
         # Copiamos los comandos globales a nuestro servidor 
         # Esto evita tener que esperar la propagación global de hasta una hora.
         self.tree.copy_global_to(guild=MY_GUILD)
@@ -70,6 +74,11 @@ async def on_ready():
     asyncio.create_task(check_new_post_task(instagram, posts, dc_insta_msg, 3600))
 
 
+@client.event
+async def on_interaction(interaction):
+    await dai_roles_interaction(interaction)
+
+
 # Evento cuando un miembro se une al servidor
 @client.event
 async def on_member_join(member):
@@ -88,7 +97,7 @@ async def on_member_join(member):
 
 
 @client.tree.command(name='bienvenida', description='Imagen de Bienvenida')
-async def ip(interaction: discord.Interaction):
+async def welcome(interaction: discord.Interaction):
     avatar_url = interaction.user.avatar.url
     nombre_usuario = interaction.user.name
     image_binary = generate_welcome_image(nombre_usuario, avatar_url, 'assets/tema_claro_recortado.png')
@@ -209,15 +218,4 @@ async def instagram_send(interaction: discord.Interaction, post_id: str):
 
 
 
-
-instagram = InstagramAPI(INSTAGRAM_API_KEY)
-
-
-
-
 client.run(TOKEN)
-
-
-#print(instagram.get_all_posts())
-#instagram.save_all_posts(supabase)
-#instagram.update_likes_comments('18032521846722078', supabase)
