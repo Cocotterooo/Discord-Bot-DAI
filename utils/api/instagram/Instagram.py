@@ -25,6 +25,16 @@ class InstagramAPI():
         else:
             return(f"Error: {response.status_code} - {response.text}")
 
+    async def get_post(self, post_id: int):
+        url = f"https://graph.instagram.com/{post_id}?fields=id,like_count,comments_count,caption,media_type,media_url,thumbnail_url,permalink,timestamp&access_token={self.access_token}"
+        response = requests.get(url)
+        print(response)
+        if response.status_code == 200:
+            media_data = response.json()
+            return media_data
+        else:
+            return(f"Error: {response.status_code} - {response.text}")
+
     async def get_num_likes_comments(self, post_id: int):
         url = f"https://graph.instagram.com/{post_id}?fields=like_count,comments_count&access_token={self.access_token}"
         response = requests.get(url)
@@ -40,7 +50,7 @@ class InstagramAPI():
             return response.json()
         else:
             return None
-    
+
     def get_items_carousel(self, media_id: int):
         url = f'https://graph.instagram.com/{media_id}?fields=children{{media_url}}&access_token={self.access_token}'
         response = requests.get(url)
@@ -68,7 +78,7 @@ class InstagramAPI():
         except Exception as e:
             print(f"❌Error: get_image_post() - al guardar la imagen: {e}")
             return None
-    
+
     async def get_video_post(self, media_url):
         async with aiohttp.ClientSession() as session:
             async with session.get(media_url) as response:

@@ -8,7 +8,7 @@ import io
 from utils.welcome_image import generate_welcome_image
 from utils.api.instagram.Instagram import InstagramAPI 
 from utils.db.authentication import supabase_autenticated
-from utils.periodic_tasks.renew import renew_all_likes_comments_task, renew_media_url_task, renew_likes_comments_sended_messages
+from utils.periodic_tasks.renew import renew_all_likes_comments_task, renew_media_url_task, check_new_post_task
 from utils.db.get_post_info import get_post_info
 from utils.db.Posts import Post
 from utils.db.Discord_instagram_messsage import Dc_insta_msg
@@ -28,9 +28,6 @@ DB_API_KEY: str = os.environ.get("DB_API_KEY")
 DB_EMAIL: str = os.environ.get("DB_EMAIL")
 DB_EMAIL_PASSWORD: str = os.environ.get("DB_EMAIL_PASSWORD")
 supabase = supabase_autenticated(DB_URL, DB_API_KEY, DB_EMAIL, DB_EMAIL_PASSWORD)
-
-#! Crear una instancia de Discord_instagram_messsage
-Dc_insta_msg = Dc_insta_msg(supabase)
 
 #! Crear una instancia de Instagram
 INSTAGRAM_API_KEY = os.getenv('INSTAGRAM_API_KEY')
@@ -59,15 +56,18 @@ intents.guilds = True
 client = Bot(intents=intents)
 
 
+#! Crear una instancia de Discord_instagram_messsage
+dc_insta_msg = Dc_insta_msg(supabase, client, instagram)
+
 
 @client.event
 async def on_ready():
     print(f'Bot conectado como {client.user}')
     channel = client.get_channel(LOG_CHANNEL) 
     await channel.send('Estado Bot: **Online** <a:online:1288631919352877097>')
-    asyncio.create_task(renew_all_likes_comments_task(posts, 3600))
+    asyncio.create_task(renew_all_likes_comments_task(posts, 3600, client, supabase, INSTAGRAM_DAI_CHANNEL))
     asyncio.create_task(renew_media_url_task(posts, 86400))
-    asyncio.create_task(renew_likes_comments_sended_messages(supabase, 3600))
+    asyncio.create_task(check_new_post_task(instagram, posts, dc_insta_msg, 3600))
 
 
 # Evento cuando un miembro se une al servidor
@@ -196,7 +196,7 @@ async def instagram_send(interaction: discord.Interaction, post_id: str):
                     embed=embed)
                 message_id = embed_message.id
             try:
-                await Dc_insta_msg.save_message_id(message_id, post_id)
+                await dc_insta_msg.save_message_id(message_id, post_id)
                 print(f"✅ID del mensaje almacenado en la DB: {message_id}")
             except Exception as e:
                 print(f"❌Error: instagram_send() - al almacenar el ID del mensaje en la base de datos: {e}")

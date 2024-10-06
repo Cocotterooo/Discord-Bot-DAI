@@ -1,0 +1,1 @@
+supabase.rpc('check_discrepancies').execute()
