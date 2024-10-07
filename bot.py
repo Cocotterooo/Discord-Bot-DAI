@@ -17,8 +17,11 @@ from utils.interactions.instagram_commands import instagram_send_command
 # Selector de Roles de la DAI:
 from utils.interactions.dai_roles import dai_roles_interaction, dai_roles
 
+# Creador de canales de voz:
+from utils.interactions.create_voice_channel import voice_channel_creator
+
 # Constantes
-from config import SERVER_ID, LOG_CHANNEL, WELCOME_CHANNEL, INSTAGRAM_DAI_CHANNEL, instagram_embed
+from config import SERVER_ID, LOG_CHANNEL, WELCOME_CHANNEL, INSTAGRAM_DAI_CHANNEL, ADMIN_ROLE
 
 # Cargar el archivo .env
 load_dotenv()
@@ -47,7 +50,8 @@ class Bot(discord.Client):
     #* Aquí sincronizamos los comandos de aplicación con el servidor especificado (MY_GUILD).
     async def setup_hook(self):
         dai_roles(self)
-        instagram_send_command(self, supabase, instagram)
+        instagram_send_command(self, supabase, instagram, dc_insta_msg, INSTAGRAM_DAI_CHANNEL, ADMIN_ROLE)
+        voice_channel_creator(self, ADMIN_ROLE)
         # Copiamos los comandos globales a nuestro servidor 
         # Esto evita tener que esperar la propagación global de hasta una hora.
         self.tree.copy_global_to(guild=MY_GUILD)

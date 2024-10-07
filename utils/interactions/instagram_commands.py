@@ -1,5 +1,5 @@
 from supabase import Client
-from api.instagram.Instagram import InstagramAPI
+from utils.api.instagram.Instagram import InstagramAPI
 import discord
 from discord.ext import commands
 from discord import app_commands
@@ -8,14 +8,13 @@ import io
 from utils.db.get_post_info import get_post_info
 from utils.db.Discord_instagram_messsage import Dc_insta_msg
 from config import instagram_embed
-from config import ADMIN_ROLE
 
-def instagram_send_command(client: commands.Bot, supabase: Client, instagram: InstagramAPI, dc_insta_msg: Dc_insta_msg, INSTAGRAM_DAI_CHANNEL: int):
+def instagram_send_command(client: commands.Bot, supabase: Client, instagram: InstagramAPI, dc_insta_msg: Dc_insta_msg, instagram_dai_channel: int, admin_role_id: int):
     @client.tree.command(name='instagram', description='Envía una publicación de Instagram al canal de Instagram')
     @app_commands.describe(post_id='La ID de la publicación')
     async def instagram_send(interaction: discord.Interaction, post_id: str):
         await interaction.response.defer(thinking=True)  # Indica que se está procesando
-        role_allowed = discord.utils.get(interaction.guild.roles, id=ADMIN_ROLE)
+        role_allowed = discord.utils.get(interaction.guild.roles, id=admin_role_id)
 
         if role_allowed not in interaction.user.roles:
             await interaction.response.send_message("<:no:1288631410558767156> No tienes permiso para usar este comando.", ephemeral=True)
@@ -30,7 +29,7 @@ def instagram_send_command(client: commands.Bot, supabase: Client, instagram: In
                 return
 
             # Datos de la publicación
-            channel = client.get_channel(INSTAGRAM_DAI_CHANNEL)
+            channel = client.get_channel(instagram_dai_channel)
             type_post = data.get('media_type')
             permalink = data.get('permalink')
             caption = data.get('caption')
@@ -103,7 +102,7 @@ def instagram_send_command(client: commands.Bot, supabase: Client, instagram: In
                 await interaction.followup.send(f'<:no:1288631410558767156> Error al almacenar el ID del mensaje en la base de datos. (La publicación no se actualizará)')
                 return
 
-            await interaction.followup.send(f'<:correcto:1288631406452412428> Se ha enviado la publicación con id `{post_id}` a <#{INSTAGRAM_DAI_CHANNEL}>. ID del mensaje: `{message_id}`')
+            await interaction.followup.send(f'<:correcto:1288631406452412428> Se ha enviado la publicación con id `{post_id}` a <#{instagram_dai_channel}>. ID del mensaje: `{message_id}`')
 
         except ValueError:
             await interaction.followup.send(f'<:no:1288631410558767156> Error: ID de publicación no válida.')
