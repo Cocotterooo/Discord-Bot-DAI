@@ -5,17 +5,19 @@ import os
 import asyncio
 import io
 
+# Mensajes de Instagram:
 from utils.welcome_image import generate_welcome_image
 from utils.api.instagram.Instagram import InstagramAPI 
 from utils.db.authentication import supabase_autenticated
 from utils.periodic_tasks.renew import renew_all_likes_comments_task, renew_media_url_task, check_new_post_task
-from utils.db.get_post_info import get_post_info
 from utils.db.Posts import Post
 from utils.db.Discord_instagram_messsage import Dc_insta_msg
+from utils.interactions.instagram_commands import instagram_send_command
 
-from utils.interactions.dai_roles import dai_roles_interaction, setup_commands
+# Selector de Roles de la DAI:
+from utils.interactions.dai_roles import dai_roles_interaction, dai_roles
 
-
+# Constantes
 from config import SERVER_ID, LOG_CHANNEL, WELCOME_CHANNEL, INSTAGRAM_DAI_CHANNEL, instagram_embed
 
 # Cargar el archivo .env
@@ -44,7 +46,8 @@ class Bot(discord.Client):
 
     #* Aquí sincronizamos los comandos de aplicación con el servidor especificado (MY_GUILD).
     async def setup_hook(self):
-        setup_commands(self)
+        dai_roles(self)
+        instagram_send_command(self, supabase, instagram)
         # Copiamos los comandos globales a nuestro servidor 
         # Esto evita tener que esperar la propagación global de hasta una hora.
         self.tree.copy_global_to(guild=MY_GUILD)
@@ -67,8 +70,8 @@ dc_insta_msg = Dc_insta_msg(supabase, client, instagram)
 @client.event
 async def on_ready():
     print(f'Bot conectado como {client.user}')
-    channel = client.get_channel(LOG_CHANNEL) 
-    await channel.send('Estado Bot: **Online** <a:online:1288631919352877097>')
+    #log_channel = client.get_channel(LOG_CHANNEL) 
+    #await log_channel.send('Estado Bot: **Online** <a:online:1288631919352877097>')
     asyncio.create_task(renew_all_likes_comments_task(posts, 3600, client, supabase, INSTAGRAM_DAI_CHANNEL))
     asyncio.create_task(renew_media_url_task(posts, 86400))
     asyncio.create_task(check_new_post_task(instagram, posts, dc_insta_msg, 3600))
@@ -110,111 +113,6 @@ async def welcome(interaction: discord.Interaction):
         await channel.send(file=discord.File(fp=image_binary, filename='bienvenida.png'))
         await channel.send(f'<:entrar:1288631392070012960>  ¡Bienvenid@ a la **Comunidad Oficial** de la **EEI**! 🎉\n-#       **Delegación de Alumnos** EEI - Uvigo')
 
-
-
-@client.tree.command(name='instagram', description='Envía una publicación de Instagram al canal de Instagram')
-@app_commands.describe(
-    post_id='La ID de la publicación')
-async def instagram_send(interaction: discord.Interaction, post_id: str):
-    await interaction.response.defer(thinking=True)  # Indica que se está procesando
-    message_id = None
-    try:
-        post_id = int(post_id)
-        data = await get_post_info(post_id, supabase)
-        
-        if data is None:
-            await interaction.followup.send(f'<:no:1288631410558767156> Error al enviar la publicación')
-            return
-        else:
-            channel = client.get_channel(INSTAGRAM_DAI_CHANNEL)
-            type_post = data['media_type']
-            permalink = data['permalink']
-            caption = data['caption']
-            likes = data['likes_count']
-            comments = data['comments_count']
-            date_published = data['date_published']
-            media_url = data['media_url']
-
-            if type_post == 'CAROUSEL_ALBUM':
-                embed = instagram_embed(permalink=permalink, 
-                                        caption=caption, 
-                                        likes=likes, 
-                                        comments=comments, 
-                                        post_id=post_id, 
-                                        date_published=date_published, 
-                                        media_url=media_url)
-                # Envía el embed y almacena el mensaje
-                embed_message = await channel.send(
-                    content='-# <a:dinkdonk:1289157144436015174> <@&1288263963812958300>',
-                    embed=embed)
-                message_id = embed_message.id
-                image_files = []
-                try:
-                    items =  instagram.get_items_carousel(post_id)
-                    for item in items[1:]:  # Omitir la primera imagen
-                        image_data =  instagram.get_image_post(item['media_url'])
-                        if image_data:
-                            image_files.append(discord.File(fp=image_data, filename='image.png'))
-                except Exception as e:
-                    print(f"❌Error: instagram_send() - al obtener las imágenes del carrusel: {e}")
-                    await interaction.followup.send(f'<:no:1288631410558767156> Error al obtener las imágenes del carrusel')
-                    return
-                if image_files:
-                    # Envía las imágenes adjuntas
-                    await channel.send(files=image_files)
-                # Respuesta con la ID del mensaje
-            elif type_post == 'VIDEO':
-                embed = instagram_embed(
-                    permalink=permalink, 
-                    caption=caption, 
-                    likes=likes, 
-                    comments=comments, 
-                    post_id=post_id, 
-                    date_published=date_published
-                )
-                # Envía el mensaje con el embed
-                try:
-                    embed_message = await channel.send(
-                        content='-# <a:dinkdonk:1289157144436015174> <@&1288263963812958300>', 
-                        embed=embed
-                    )
-                    message_id = embed_message.id
-                except Exception as e:
-                    print(f"❌Error: instagram_send() - al enviar el mensaje con embed: {e}")
-                    await interaction.followup.send(f'<:no:1288631410558767156> Error al enviar el mensaje con el embed')
-                    return
-                # Intenta obtener y enviar el video después del embed
-                try:
-                    video_file = await instagram.get_video_post(media_url)
-                    video_file = io.BytesIO(video_file)
-                    video_file.name = 'video.mp4'  # Asigna un nombre al archivo
-                    await channel.send(file=discord.File(video_file, 'video.mp4'))
-                except Exception as e:
-                    print(f"❌Error: instagram_send() - al obtener o enviar el video: {e}")
-                    await interaction.followup.send(f'<:no:1288631410558767156> Error al obtener o enviar el video de la publicación')
-            else:
-                embed = instagram_embed(permalink=permalink, 
-                                        caption=caption, 
-                                        likes=likes, 
-                                        comments=comments, 
-                                        post_id=post_id, 
-                                        date_published=date_published, 
-                                        media_url=media_url)
-                embed_message = await channel.send(
-                    content='-# <a:dinkdonk:1289157144436015174> <@&1288263963812958300>',
-                    embed=embed)
-                message_id = embed_message.id
-            try:
-                await dc_insta_msg.save_message_id(message_id, post_id)
-                print(f"✅ID del mensaje almacenado en la DB: {message_id}")
-            except Exception as e:
-                print(f"❌Error: instagram_send() - al almacenar el ID del mensaje en la base de datos: {e}")
-                await interaction.followup.send(f'<:no:1288631410558767156> Error al almacenar el ID del mensaje en la base de datos (La publicación no se actualizará)')
-            await interaction.followup.send(f'<:correcto:1288631406452412428> Se ha enviado la publicación con id `{post_id}` a <#{INSTAGRAM_DAI_CHANNEL}>. ID del mensaje: `{embed_message.id}`')
-            
-    except Exception as e:
-        await interaction.followup.send(f'<:no:1288631410558767156> Error al enviar la publicación')
-        print(f"❌Error: instagram_send() - al enviar la publicación: {e}")
 
 
 
