@@ -3,10 +3,9 @@ from discord.ext import commands
 from discord import app_commands, ButtonStyle
 from discord.ui import Button, View
 import asyncio
+from supabase import Client
 
-from config import voice_channel_creator_embed
-
-def voice_channel_creator(bot: commands.Bot, admin_role: int):
+def voice_channel_creator(bot: commands.Bot, admin_role: int, channel_creator_embed: discord.Embed):
     @bot.tree.command(name="creador_canales_voz", description="Envía un embed con botones para crear canales de voz personalizados.")
     @app_commands.describe(creator_channel_id='La ID del chat donde se enviará el embed')
     async def enviar_embed(interaction: discord.Interaction, creator_channel_id:str):
@@ -22,9 +21,8 @@ def voice_channel_creator(bot: commands.Bot, admin_role: int):
             await interaction.followup.send("<:no:1288631410558767156> La ID del no es válida.", ephemeral=True)
             return
         channel = bot.get_channel(creator_channel_id)
-
-        embed = voice_channel_creator_embed()
-        
+        # Crear el embed
+        embed = channel_creator_embed
         # Crear los botones
         button1 = Button(label="", style=ButtonStyle.secondary, custom_id="2", emoji='2️⃣')
         button2 = Button(label="", style=ButtonStyle.secondary, custom_id="3", emoji='3️⃣')
@@ -58,23 +56,48 @@ def voice_channel_creator(bot: commands.Bot, admin_role: int):
     '2': ID_COMUNICACION,
     '3': ID_ASUNTOS_EXTERIORES,
     '4': ID_DEPORTES
-}
-async def dai_roles_interaction(interaction: discord.Interaction):
-    if interaction.type == discord.InteractionType.component:
-        user = interaction.user
-        guild = interaction.guild
+}'''
+async def create_or_update_channel(bot: discord.Client, supabase: Client, interaction: discord.Interaction):
+    user_id = interaction.user.id
+    category = discord.utils.get(interaction.guild.categories, name="🔊| CANALES DE VOZ |🔊")
+    
+    # Verificar si el usuario ya existe en la base de datos
+    user_data = supabase.table('users').select('voice_channel').eq('id', user_id).execute()
+    
+    # Acceder correctamente a los datos
+    user_channel_id = user_data.data[0]['voice_channel'] if user_data.data else None
+
+    # Limite de usuarios según el botón presionado
+    user_limit = int(interaction.data.get("custom_id"))
+    channel_name = f"🔊⦙ {interaction.user.name}"
+
+    if user_channel_id:  # Si el usuario ya tiene un canal
+        user_channel = bot.get_channel(int(user_channel_id))
+        if user_channel:
+            # Editar el límite de usuarios del canal existente
+            await user_channel.edit(user_limit=user_limit)
+            # Responder al usuario mencionando su canal
+            await interaction.response.send_message(
+                f"<:correcto:1288631406452412428> El **límite de usuarios** de tu canal {user_channel.mention} ahora es `{user_limit}`.", 
+                ephemeral=True
+            )
+    else:  # Si no tiene un canal, lo creamos
+        channel = await interaction.guild.create_voice_channel(
+            name=channel_name, 
+            category=category, 
+            user_limit=user_limit
+        )
         
-        # Obtener el rol correspondiente basado en el botón presionado
-        role_id = ROLE_IDS.get(interaction.data.get('custom_id'))
-        role = guild.get_role(role_id)
-        
-        if role:
-            if role in user.roles:
-                # Si el usuario ya tiene el rol, se lo quitamos
-                await user.remove_roles(role)
-                await interaction.response.send_message(f"<:no:1288631410558767156> Se te ha **eliminado** el rol {role.mention}.", ephemeral=True)
-            else:
-                # Si no tiene el rol, se lo asignamos
-                await user.add_roles(role)
-                await interaction.response.send_message(f"<:correcto:1288631406452412428> Se te ha **asignado** el rol {role.mention}.", ephemeral=True)
-                '''
+        # Guardar el canal en la base de datos (integrando la lógica de save_user_channel)
+        user_data = supabase.table('users').select('id').eq('id', user_id).execute()
+
+        if not user_data.data:  # Si el usuario no está en la base de datos
+            supabase.table('users').insert({"id": user_id, "voice_channel": channel.id}).execute()
+        else:  # Si el usuario ya está en la base de datos, actualizar el canal de voz
+            supabase.table('users').update({"voice_channel": channel.id}).eq('id', user_id).execute()
+
+        # Responder al usuario mencionando su canal
+        await interaction.response.send_message(
+            f"<:correcto:1288631406452412428> Canal {channel.mention} creado con **límite de** `{user_limit}` **usuarios**.", 
+            ephemeral=True
+        )
