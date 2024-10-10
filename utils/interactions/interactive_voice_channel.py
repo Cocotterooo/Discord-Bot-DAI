@@ -77,7 +77,7 @@ async def create_or_update_channel(bot: discord.Client, supabase: Client, intera
                 ephemeral=True
             )
             # Comenzar a monitorear el canal
-            asyncio.create_task(monitor_channel_activity(bot, channel, supabase, user_id))
+            asyncio.create_task(monitor_channel_activity(bot, user_channel, supabase, user_id))
     else:  # Si no tiene un canal, lo creamos
         channel = await interaction.guild.create_voice_channel(
             name=channel_name, 
