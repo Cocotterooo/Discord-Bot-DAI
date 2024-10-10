@@ -125,7 +125,9 @@ async def welcome(interaction: discord.Interaction):
 
 @client.tree.command(name='web', description='Muestra Enlace a la web de la Delegación de Alumnos de Industriales')
 async def web(interaction: discord.Interaction):
-    await interaction.response.send_message(embed=linktree_embed(), ephemeral=False)
+    await interaction.response.defer(thinking=True)  # Indica que se está procesando
+    await interaction.followup.send(embed=linktree_embed(), ephemeral=False)
+    return
 
 
 client.run(TOKEN)
