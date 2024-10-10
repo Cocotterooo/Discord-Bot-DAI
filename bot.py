@@ -22,7 +22,7 @@ from utils.interactions.interactive_voice_channel import voice_channel_creator, 
 from config import voice_channel_creator_embed
 
 # Constantes
-from config import SERVER_ID, LOG_CHANNEL, WELCOME_CHANNEL, INSTAGRAM_DAI_CHANNEL, ADMIN_ROLE
+from config import SERVER_ID, LOG_CHANNEL, WELCOME_CHANNEL, INSTAGRAM_DAI_CHANNEL, ADMIN_ROLE, linktree_embed
 
 # Cargar el archivo .env
 load_dotenv()
@@ -121,6 +121,11 @@ async def welcome(interaction: discord.Interaction):
     else:
         await channel.send(file=discord.File(fp=image_binary, filename='bienvenida.png'))
         await channel.send(f'<:entrar:1288631392070012960>  ¡Bienvenid@ a la **Comunidad Oficial** de la **EEI**! 🎉\n-#       **Delegación de Alumnos** EEI - Uvigo')
+
+
+@client.tree.command(name='web', description='Muestra Enlace a la web de la Delegación de Alumnos de Industriales')
+async def web(interaction: discord.Interaction):
+    await interaction.response.send_message(embed=linktree_embed(), ephemeral=False)
 
 
 client.run(TOKEN)
