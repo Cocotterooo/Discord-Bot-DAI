@@ -21,6 +21,9 @@ from utils.interactions.dai_roles import dai_roles_interaction, dai_roles
 from utils.interactions.interactive_voice_channel import voice_channel_creator, create_or_update_channel, monitor_channel_activity, resume_channel_monitoring
 from config import voice_channel_creator_embed
 
+# Encuestas en canales de voz:
+from utils.interactions.private_poll import voice_poll_cmd
+
 # Constantes
 from config import SERVER_ID, LOG_CHANNEL, WELCOME_CHANNEL, INSTAGRAM_DAI_CHANNEL, ADMIN_ROLE, linktree_embed
 
@@ -54,6 +57,7 @@ class Bot(discord.Client):
         dai_roles(self)
         instagram_send_command(self, supabase, instagram, dc_insta_msg, INSTAGRAM_DAI_CHANNEL, ADMIN_ROLE)
         voice_channel_creator(self, ADMIN_ROLE, voice_channel_creator_embed())
+        voice_poll_cmd(self)
         # Copiamos los comandos globales a nuestro servidor 
         # Esto evita tener que esperar la propagación global de hasta una hora.
         self.tree.copy_global_to(guild=MY_GUILD)
