@@ -123,7 +123,7 @@ async def welcome(interaction: discord.Interaction):
         await channel.send(f'<:entrar:1288631392070012960>  ¡Bienvenid@ a la **Comunidad Oficial** de la **EEI**! 🎉\n-#       **Delegación de Alumnos** EEI - Uvigo')
 
 
-@client.tree.command(name='web', description='Muestra Enlace a la web de la Delegación de Alumnos de Industriales')
+@client.tree.command(name='rss', description='Muestra las redes sociales y la web de la Delegación de Alumnos de Industriales')
 async def web(interaction: discord.Interaction):
     await interaction.response.defer(thinking=True)  # Indica que se está procesando
     await interaction.followup.send(embed=linktree_embed(), ephemeral=False)
@@ -131,3 +131,5 @@ async def web(interaction: discord.Interaction):
 
 
 client.run(TOKEN)
+
+

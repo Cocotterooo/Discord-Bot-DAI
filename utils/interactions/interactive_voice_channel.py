@@ -13,7 +13,7 @@ def voice_channel_creator(bot: commands.Bot, admin_role: int, embed_content: dis
         await interaction.response.defer(thinking=True)  # Indica que se está procesando
         role_allowed = discord.utils.get(interaction.guild.roles, id=admin_role)
         if role_allowed not in interaction.user.roles:
-            await interaction.response.send_message("<:no:1288631410558767156> No tienes permiso para usar este comando.", ephemeral=True)
+            await interaction.followup.send("<:no:1288631410558767156> No tienes permiso para usar este comando.", ephemeral=True)
             return
 
         try:
