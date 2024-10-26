@@ -8,15 +8,9 @@ from config import ADMIN_ROLE, DAI_ROLES_CHANNEL_ID, dai_roles_embed, ID_INFRAES
 
 def dai_roles(bot: commands.Bot):
     @bot.tree.command(name="dai_roles", description="Envía un embed con botones para asignar o remover roles")
-    async def enviar_embed(interaction: discord.Interaction):
+    @app_commands.checks.has_role(ADMIN_ROLE)
+    async def enviar_embed(interaction: discord.Interaction, channel: discord.TextChannel):
         await interaction.response.defer(thinking=True)  # Indica que se está procesando
-        role_allowed = discord.utils.get(interaction.guild.roles, id=ADMIN_ROLE)
-        
-        if role_allowed not in interaction.user.roles:
-            await interaction.response.send_message("<:no:1288631410558767156> No tienes permiso para usar este comando.", ephemeral=True)
-            return
-
-        channel = bot.get_channel(DAI_ROLES_CHANNEL_ID)
         
         embed = dai_roles_embed()
         
@@ -24,7 +18,7 @@ def dai_roles(bot: commands.Bot):
         button1 = Button(label="Infraestructuras", style=ButtonStyle.success, custom_id="dai_role_1", emoji='💻')
         button2 = Button(label="Comunicación", style=ButtonStyle.success, custom_id="dai_role_2", emoji='📣')
         button3 = Button(label="Asuntos Exteriores", style=ButtonStyle.success, custom_id="dai_role_3", emoji='🫂')
-        button4 = Button(label="Deportes", style=ButtonStyle.success, custom_id="dai_role_4", emoji='🏃')
+        button4 = Button(label="Deportes y Ocio", style=ButtonStyle.success, custom_id="dai_role_4", emoji='🏃')
         
         # Crear una vista que contenga los botones
         view = View()
@@ -37,6 +31,10 @@ def dai_roles(bot: commands.Bot):
         await channel.send(embed=embed, view=view)
         await interaction.followup.send("<:correcto:1288631406452412428> Selector de roles enviado.", ephemeral=True)
 
+    @enviar_embed.error
+    async def enviar_embed_error(interaction: discord.Interaction, error):
+        if isinstance(error, app_commands.MissingRole):
+            await interaction.response.send_message("<:no:1288631410558767156> No tienes permisos para usar este comando.", ephemeral=True)
 
 ROLE_IDS = {
     'dai_role_1': ID_INFRAESTRUCTURAS,

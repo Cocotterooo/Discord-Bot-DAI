@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 from discord import ButtonStyle, Interaction, ui, app_commands
 
-from config import TICKET_CATEGORY_ID, VERIFICATION_CATEGORY_ID, DAI_MEMBER_ROLE_ID, VERIFIED_ROLE_ID, tickets_embed, verification_embed, support_and_verification_embed
+from config import ADMIN_ROLE, TICKET_CATEGORY_ID, VERIFICATION_CATEGORY_ID, DAI_MEMBER_ROLE_ID, VERIFIED_ROLE_ID, tickets_embed, verification_embed, support_and_verification_embed
 
 class TicketView(ui.View):
     def __init__(self):
@@ -104,7 +104,7 @@ async def handle_ticket_interaction(interaction: discord.Interaction):
 
 def support_and_verification(bot):
     @bot.tree.command(name="soporte_verificacion", description="Enviar el embed principal")
-    @app_commands.checks.has_role(DAI_MEMBER_ROLE_ID)
+    @app_commands.checks.has_role(ADMIN_ROLE)
     async def send_main_embed(interaction: discord.Interaction, channel: discord.TextChannel):
         """Slash Command que envía el embed principal al canal seleccionado"""
         embed = support_and_verification_embed()

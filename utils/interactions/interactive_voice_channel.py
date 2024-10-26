@@ -5,25 +5,16 @@ from discord.ui import Button, View
 import asyncio
 from supabase import Client
 
+from config import ADMIN_ROLE
 
-def voice_channel_creator(bot: commands.Bot, admin_role: int, embed_content: discord.Embed):
+
+def voice_channel_creator(bot: commands.Bot, admin_role: int, embed: discord.Embed):
     @bot.tree.command(name="creador_canales_voz", description="Envía un embed con botones para crear canales de voz personalizados.")
     @app_commands.describe(creator_channel_id='La ID del chat donde se enviará el embed')
-    async def enviar_embed(interaction: discord.Interaction, creator_channel_id:str):
+    @app_commands.checks.has_role(ADMIN_ROLE)
+    async def enviar_embed(interaction: discord.Interaction, channel: discord.TextChannel):
         await interaction.response.defer(thinking=True)  # Indica que se está procesando
-        role_allowed = discord.utils.get(interaction.guild.roles, id=admin_role)
-        if role_allowed not in interaction.user.roles:
-            await interaction.followup.send("<:no:1288631410558767156> No tienes permiso para usar este comando.", ephemeral=True)
-            return
 
-        try:
-            creator_channel_id = int(creator_channel_id)
-        except ValueError:
-            await interaction.followup.send("<:no:1288631410558767156> La ID del no es válida.", ephemeral=True)
-            return
-        channel = bot.get_channel(creator_channel_id)
-        # Crear el embed
-        embed = embed_content
         # Crear los botones
         button1 = Button(label="", style=ButtonStyle.secondary, custom_id="2", emoji='2️⃣')
         button2 = Button(label="", style=ButtonStyle.secondary, custom_id="3", emoji='3️⃣')
@@ -51,6 +42,10 @@ def voice_channel_creator(bot: commands.Bot, admin_role: int, embed_content: dis
         await channel.send(embed=embed, view=view)
         await interaction.followup.send("<:correcto:1288631406452412428> Creador de canales de voz enviado.", ephemeral=True)
 
+    @enviar_embed.error
+    async def enviar_embed_error(interaction: discord.Interaction, error):
+        if isinstance(error, app_commands.MissingRole):
+            await interaction.response.send_message("<:no:1288631410558767156> No tienes permisos para usar este comando.", ephemeral=True)
 
 async def create_or_update_channel(bot: discord.Client, supabase: Client, interaction: discord.Interaction):
     user_id = interaction.user.id

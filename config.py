@@ -60,7 +60,7 @@ def dai_roles_embed():
         > <@&1292466487247896699>
         > <@&1292466970687442984>
         > <@&1292468137845067776>
-        ### <:exclamacion:1288628819548176514> Extras:
+        ### <:exclamacion:1288628819548176514> Especiales:
         > <@&1288552528484630598> <:desarrollador:1288628718423638037>
         > <@&1288206919118618839> <:moderador:1288628804276977735>
         > <@&1288553111119462451>
@@ -68,7 +68,7 @@ def dai_roles_embed():
         ''',
         color=discord.Color.blue()
     )
-    embed.add_field(name="<:verificado:1288628715982553188> Roles Especiales", value="Para obtener un rol de las secciones **Directiva** o **Extras**, contacta con <@&1288552528484630598>.", inline=False)
+    embed.add_field(name="<:verificado:1288628715982553188> Roles Especiales", value="Para obtener un rol de las secciones **Directiva** o **Especiales**, contacta con <@&1288552528484630598>.", inline=False)
     embed.add_field(name="<:verificado:1288628715982553188> Comisiones Delegadas", value="Para **obtener** o **eliminar** un rol de una Comisión Delegada solo haz click en los botones.", inline=False)
     embed.set_image(url='https://i.imgur.com/8GkOfv1.png')
     embed.set_footer(text='Delegación de Alumnos de Industriales - UVigo', icon_url='https://cdn.discordapp.com/emojis/1288628804276977735.webp?size=96&quality=lossless')

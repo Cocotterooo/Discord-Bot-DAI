@@ -125,6 +125,7 @@ async def on_member_join(member):
 
 
 @client.tree.command(name='bienvenida', description='Imagen de Bienvenida')
+@app_commands.checks.has_role(ADMIN_ROLE)
 async def welcome(interaction: discord.Interaction):
     avatar_url = interaction.user.avatar.url
     nombre_usuario = interaction.user.name
