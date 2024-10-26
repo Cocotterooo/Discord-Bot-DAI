@@ -24,6 +24,9 @@ from config import voice_channel_creator_embed
 # Encuestas en canales de voz:
 from utils.interactions.private_poll import voice_poll_cmd
 
+# Soporte y verificación:
+from utils.interactions.support_and_verification import support_and_verification
+
 # Constantes
 from config import SERVER_ID, LOG_CHANNEL, WELCOME_CHANNEL, INSTAGRAM_DAI_CHANNEL, ADMIN_ROLE, linktree_embed
 
@@ -58,6 +61,7 @@ class Bot(discord.Client):
         instagram_send_command(self, supabase, instagram, dc_insta_msg, INSTAGRAM_DAI_CHANNEL, ADMIN_ROLE)
         voice_channel_creator(self, ADMIN_ROLE, voice_channel_creator_embed())
         voice_poll_cmd(self)
+        support_and_verification(self)
         # Copiamos los comandos globales a nuestro servidor 
         # Esto evita tener que esperar la propagación global de hasta una hora.
         self.tree.copy_global_to(guild=MY_GUILD)
@@ -109,7 +113,7 @@ async def on_member_join(member):
         await print(f'Ocurrió un error al generar la imagen de Bienvenida de {nombre_usuario}')
     else:
         await channel.send(file=discord.File(fp=image_binary, filename='bienvenida.png'))
-        await channel.send(f'<:entrar:1288631392070012960> {member.mention} ¡Bienvenid@ a la **Comunidad Oficial** de la **EEI**! 🎉\n-#       **Delegación de Alumnos** EEI - Uvigo')
+        await channel.send(f'<:entrar:1288631392070012960> {member.mention} ¡Bienvenid@ a la **Comunidad Oficial** de la **EEI**! 🎉 \n<:verificado:1288628715982553188> Si eres estudiante en la **EEI verifica tu cuenta** en <#1299775062215229460>\n-#       **Delegación de Alumnos** EEI - Uvigo')
 
 
 @client.tree.command(name='bienvenida', description='Imagen de Bienvenida')

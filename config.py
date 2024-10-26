@@ -1,18 +1,28 @@
 import discord
 
 SERVER_ID = 1288206483091361885
+INSTAGRAM_DAI_ACCOUNT_URL = "https://www.instagram.com/dai_uvigo/"
+WEB_DAI_URL = "https://dai.uvigo.gal/"
+
+# CHANNELS:
+DAI_ROLES_CHANNEL_ID = 1292469145388191834
 LOG_CHANNEL = 1290404101108269169
 WELCOME_CHANNEL = 1288283913181200446
 INSTAGRAM_DAI_CHANNEL = 1288210585632112743
-INSTAGRAM_DAI_ACCOUNT_URL = "https://www.instagram.com/dai_uvigo/"
-WEB_DAI_URL = "https://dai.uvigo.gal/"
-ADMIN_ROLE = 1288552528484630598
-DAI_ROLES_CHANNEL_ID = 1292469145388191834
+TICKET_CATEGORY_ID = 1299777296714174555
+VERIFICATION_CATEGORY_ID = 1299777625421774979
 
+# ROLES:
 ID_INFRAESTRUCTURAS = 1292466487247896699
 ID_COMUNICACION = 1292466863707521167
 ID_ASUNTOS_EXTERIORES = 1292466970687442984
 ID_DEPORTES = 1292468137845067776
+ADMIN_ROLE = 1288552528484630598
+DAI_MEMBER_ROLE_ID = 1288206919118618839
+VERIFIED_ROLE_ID = 1299781091451867146
+
+def dai_color() -> discord.Color:
+    return discord.Color.from_str('#00ACE2')
 
 
 def instagram_embed(permalink: str, likes: int, comments: int, post_id: int, date_published: str, caption: str = '', media_url: str = ''):
@@ -30,7 +40,6 @@ def instagram_embed(permalink: str, likes: int, comments: int, post_id: int, dat
         ''',
         color=discord.Color.blue()  # Color del borde del embed
     )
-    #embed.(url="/assets/separador.png")
     embed.set_image(url=media_url)
     embed.set_footer(text=f"ID: {post_id} - {date_published}\nDelegación de Alumnos de Industriales - UVigo")
     return embed
@@ -97,18 +106,48 @@ def linktree_embed() -> discord.Embed:
     return embed
 
 
-def tickets_embed() -> discord.Embed:
+def support_and_verification_embed() -> discord.Embed:
     embed = discord.Embed(
         description=f'''
-        ## <:info:1288631394502709268> ¿Soporte?
-        ### 🎫 **Crea un Ticket** para recibir **ayuda** de la administración.
-        Una vez creado cuéntanos tu duda o problema para que podamos ayudarte.
-        Intentarémos ayudarte lo antes posible.
-        ## <:correcto:1288631406452412428> ¡Verifica tu cuenta!
-        ### <:verificado:1288628715982553188> **Verifica tu cuenta** para acceder a todos los canales del servidor.
-        Enséñanos que eres un estudiante de la EEI con tu matrícula, o moovi para tener acceso a eventos exclusivos de la escuela o canales privados o de apuntes.
+        # <:dai:1288623399672741930> Soporte y Verificación
+        ## 🎫 Crea un Ticket para recibir **ayuda** de la administración.
+        > Una vez creado, **cuéntanos tu duda o problema** para que podamos ayudarte.
+        >  
+        > Intentaremos ayudarte lo antes posible.
+        ## <:verificado:1288628715982553188> Verifica tu cuenta para acceder a todos los canales del servidor.
+        > Enséñanos que eres un **estudiante de la EEI** con tu **matrícula**, o **Moovi** para tener acceso a **eventos exclusivos** de la escuela, así como a **canales privados** o de **apuntes**.
+        >  
+        > Intentaremos gestionar tu verificación lo antes posible.
         ''',
-        color=discord.Color.blue()
+        color=dai_color()
+    )
+    embed.set_image(url='https://i.imgur.com/8GkOfv1.png')
+    embed.set_footer(text='Delegación de Alumnos de Industriales - UVigo', icon_url='https://cdn.discordapp.com/emojis/1288628804276977735.webp?size=96&quality=lossless')
+    return embed
+
+
+def tickets_embed(user: discord.User) -> discord.Embed:
+    embed = discord.Embed(
+        description=f'''
+        ## <:info:1288631394502709268> ¡Bienvenido al Soporte {user.mention}!
+        ### Te atenderá un miembro de la DAI lo antes posible.
+        Cuentanos tu problema o duda para que podamos ayudarte.
+        ''',
+        color=dai_color()
+    )
+    embed.set_image(url='https://i.imgur.com/8GkOfv1.png')
+    embed.set_footer(text='Delegación de Alumnos de Industriales - UVigo', icon_url='https://cdn.discordapp.com/emojis/1288628804276977735.webp?size=96&quality=lossless')
+    return embed
+
+
+def verification_embed(user: discord.User) -> discord.Embed:
+    embed = discord.Embed(
+        description=f'''
+        ## <:verificado:1288628715982553188> ¡Hola {user.mention}!
+        ### ¡Para que podamos verificarte necesitamos pruebas!
+        Envíanos tu **matrícula** o una captura de tu **Moovi** para que podamos verificar que eres estudiante en la EEI.
+        ''',
+        color=dai_color()
     )
     embed.set_image(url='https://i.imgur.com/8GkOfv1.png')
     embed.set_footer(text='Delegación de Alumnos de Industriales - UVigo', icon_url='https://cdn.discordapp.com/emojis/1288628804276977735.webp?size=96&quality=lossless')
