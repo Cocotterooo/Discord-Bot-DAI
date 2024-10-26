@@ -95,3 +95,21 @@ def linktree_embed() -> discord.Embed:
     embed.set_image(url='https://i.imgur.com/8GkOfv1.png')
     embed.set_footer(text='Delegación de Alumnos de Industriales - UVigo', icon_url='https://cdn.discordapp.com/emojis/1288628804276977735.webp?size=96&quality=lossless')
     return embed
+
+
+def tickets_embed() -> discord.Embed:
+    embed = discord.Embed(
+        description=f'''
+        ## <:info:1288631394502709268> ¿Soporte?
+        ### 🎫 **Crea un Ticket** para recibir **ayuda** de la administración.
+        Una vez creado cuéntanos tu duda o problema para que podamos ayudarte.
+        Intentarémos ayudarte lo antes posible.
+        ## <:correcto:1288631406452412428> ¡Verifica tu cuenta!
+        ### <:verificado:1288628715982553188> **Verifica tu cuenta** para acceder a todos los canales del servidor.
+        Enséñanos que eres un estudiante de la EEI con tu matrícula, o moovi para tener acceso a eventos exclusivos de la escuela o canales privados o de apuntes.
+        ''',
+        color=discord.Color.blue()
+    )
+    embed.set_image(url='https://i.imgur.com/8GkOfv1.png')
+    embed.set_footer(text='Delegación de Alumnos de Industriales - UVigo', icon_url='https://cdn.discordapp.com/emojis/1288628804276977735.webp?size=96&quality=lossless')
+    return embed
