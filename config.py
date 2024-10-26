@@ -111,13 +111,13 @@ def support_and_verification_embed() -> discord.Embed:
         description=f'''
         # <:dai:1288623399672741930> Soporte y Verificación
         ## 🎫 Crea un Ticket para recibir **ayuda** de la administración.
-        > Una vez creado, **cuéntanos tu duda o problema** para que podamos ayudarte.
+        > Una vez creado, **descríbenos tu duda o **problema** para que podamos asistirte de manera adecuada.
         >  
-        > Intentaremos ayudarte lo antes posible.
+        > Nos esforzaremos por ayudarte lo antes posible.
         ## <:verificado:1288628715982553188> Verifica tu cuenta para acceder a todos los canales del servidor.
-        > Enséñanos que eres un **estudiante de la EEI** con tu **matrícula**, o **Moovi** para tener acceso a **eventos exclusivos** de la escuela, así como a **canales privados** o de **apuntes**.
+        > Para obtener **acceso** a **eventos** exclusivos de la **EEI**, así como a **canales privados** y de **apuntes**, **verifica que eres estudiante de la EEI** enviándonos tu **matrícula** o una captura de **Moovi**.
         >  
-        > Intentaremos gestionar tu verificación lo antes posible.
+        > Procesaremos tu verificación a la mayor brevedad posible.
         ''',
         color=dai_color()
     )
@@ -131,7 +131,7 @@ def tickets_embed(user: discord.User) -> discord.Embed:
         description=f'''
         ## <:info:1288631394502709268> ¡Bienvenido al Soporte {user.mention}!
         ### Te atenderá un miembro de la DAI lo antes posible.
-        Cuentanos tu problema o duda para que podamos ayudarte.
+        Por favor, cuéntanos tu problema o duda para que podamos ayudarte.
         ''',
         color=dai_color()
     )
@@ -145,7 +145,7 @@ def verification_embed(user: discord.User) -> discord.Embed:
         description=f'''
         ## <:verificado:1288628715982553188> ¡Hola {user.mention}!
         ### ¡Para que podamos verificarte necesitamos pruebas!
-        Envíanos tu **matrícula** o una captura de tu **Moovi** para que podamos verificar que eres estudiante en la EEI.
+        Por favor, envíanos tu **matrícula** o una captura de pantalla de **Moovi** que confirme que eres estudiante en la **EEI**.
         ''',
         color=dai_color()
     )
