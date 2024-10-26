@@ -135,5 +135,3 @@ async def web(interaction: discord.Interaction):
 
 
 client.run(TOKEN)
-
-

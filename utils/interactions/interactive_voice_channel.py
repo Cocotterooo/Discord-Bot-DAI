@@ -63,7 +63,11 @@ async def create_or_update_channel(bot: discord.Client, supabase: Client, intera
     user_channel_id = user_data.data[0]['voice_channel'] if user_data.data else None
 
     # Limite de usuarios según el botón presionado
-    user_limit = int(interaction.data.get("custom_id"))
+    try:
+        user_limit = int(interaction.data.get("custom_id"))
+    except:
+        return
+    
     channel_name = f"🔊⦙ {interaction.user.name}"
 
     if user_channel_id:  # Si el usuario ya tiene un canal
