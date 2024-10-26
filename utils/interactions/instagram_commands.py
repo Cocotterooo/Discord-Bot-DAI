@@ -17,7 +17,7 @@ def instagram_send_command(client: commands.Bot, supabase: Client, instagram: In
         role_allowed = discord.utils.get(interaction.guild.roles, id=admin_role_id)
 
         if role_allowed not in interaction.user.roles:
-            await interaction.response.send_message("<:no:1288631410558767156> No tienes permiso para usar este comando.", ephemeral=True)
+            await interaction.followup.send("<:no:1288631410558767156> No tienes permiso para usar este comando.", ephemeral=True)
             return
         try:
             # Asegúrate de que el post_id sea un entero

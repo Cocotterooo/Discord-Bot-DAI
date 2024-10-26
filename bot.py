@@ -18,10 +18,14 @@ from utils.interactions.instagram_commands import instagram_send_command
 from utils.interactions.dai_roles import dai_roles_interaction, dai_roles
 
 # Creador de canales de voz:
-from utils.interactions.create_voice_channel import voice_channel_creator
+from utils.interactions.interactive_voice_channel import voice_channel_creator, create_or_update_channel, monitor_channel_activity, resume_channel_monitoring
+from config import voice_channel_creator_embed
+
+# Encuestas en canales de voz:
+from utils.interactions.private_poll import voice_poll_cmd
 
 # Constantes
-from config import SERVER_ID, LOG_CHANNEL, WELCOME_CHANNEL, INSTAGRAM_DAI_CHANNEL, ADMIN_ROLE
+from config import SERVER_ID, LOG_CHANNEL, WELCOME_CHANNEL, INSTAGRAM_DAI_CHANNEL, ADMIN_ROLE, linktree_embed
 
 # Cargar el archivo .env
 load_dotenv()
@@ -42,6 +46,7 @@ INSTAGRAM_API_KEY = os.getenv('INSTAGRAM_API_KEY')
 instagram = InstagramAPI(INSTAGRAM_API_KEY)
 posts = Post(supabase, instagram)
 
+
 class Bot(discord.Client):
     def __init__(self, *, intents: discord.Intents):
         super().__init__(intents=intents)
@@ -51,7 +56,8 @@ class Bot(discord.Client):
     async def setup_hook(self):
         dai_roles(self)
         instagram_send_command(self, supabase, instagram, dc_insta_msg, INSTAGRAM_DAI_CHANNEL, ADMIN_ROLE)
-        voice_channel_creator(self, ADMIN_ROLE)
+        voice_channel_creator(self, ADMIN_ROLE, voice_channel_creator_embed())
+        voice_poll_cmd(self)
         # Copiamos los comandos globales a nuestro servidor 
         # Esto evita tener que esperar la propagación global de hasta una hora.
         self.tree.copy_global_to(guild=MY_GUILD)
@@ -76,6 +82,7 @@ async def on_ready():
     print(f'Bot conectado como {client.user}')
     #log_channel = client.get_channel(LOG_CHANNEL) 
     #await log_channel.send('Estado Bot: **Online** <a:online:1288631919352877097>')
+    await resume_channel_monitoring(client, supabase)
     asyncio.create_task(renew_all_likes_comments_task(posts, 3600, client, supabase, INSTAGRAM_DAI_CHANNEL))
     asyncio.create_task(renew_media_url_task(posts, 86400))
     asyncio.create_task(check_new_post_task(instagram, posts, dc_insta_msg, 3600))
@@ -84,6 +91,8 @@ async def on_ready():
 @client.event
 async def on_interaction(interaction):
     await dai_roles_interaction(interaction)
+    if interaction.data and interaction.data.get("custom_id"):
+        await create_or_update_channel(client, supabase, interaction)
 
 
 # Evento cuando un miembro se une al servidor
@@ -118,6 +127,13 @@ async def welcome(interaction: discord.Interaction):
         await channel.send(f'<:entrar:1288631392070012960>  ¡Bienvenid@ a la **Comunidad Oficial** de la **EEI**! 🎉\n-#       **Delegación de Alumnos** EEI - Uvigo')
 
 
+@client.tree.command(name='rss', description='Muestra las redes sociales y la web de la Delegación de Alumnos de Industriales')
+async def web(interaction: discord.Interaction):
+    await interaction.response.defer(thinking=True)  # Indica que se está procesando
+    await interaction.followup.send(embed=linktree_embed(), ephemeral=False)
+    return
 
 
 client.run(TOKEN)
+
+

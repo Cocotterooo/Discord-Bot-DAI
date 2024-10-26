@@ -5,6 +5,7 @@ LOG_CHANNEL = 1290404101108269169
 WELCOME_CHANNEL = 1288283913181200446
 INSTAGRAM_DAI_CHANNEL = 1288210585632112743
 INSTAGRAM_DAI_ACCOUNT_URL = "https://www.instagram.com/dai_uvigo/"
+WEB_DAI_URL = "https://dai.uvigo.gal/"
 ADMIN_ROLE = 1288552528484630598
 DAI_ROLES_CHANNEL_ID = 1292469145388191834
 
@@ -65,19 +66,32 @@ def dai_roles_embed():
     return embed
 
 
-def voice_channel_creator_embed():
+def voice_channel_creator_embed() -> discord.Embed:
     embed = discord.Embed(
         description='''
-        ## <a:flecha:1290411623802208257> ¡Creador tu Sala de Voz!
+        ## <a:flecha:1290411623802208257> ¡Crea tu Sala de Voz!
         **Crea** un canal de voz personalizado para **trabajar**, **estudiar** o **jugar** con tus amigos; solo **elige** la cantidad de usuarios que podrán unirse a tu canal y **listo**. 
         
         ### <:moderador:1288628804276977735> Detalles:
         ''',
         color=discord.Color.blue()
     )
-    embed.add_field(name="<:info:1288631394502709268> Cambiar límite de usuarios:", value="> Si ya has creado un canal de voz y quieres cambiar el límite de usuarios del mismo, solo selecciona la cantidad que desees en los botones de debajo", inline=True)
     embed.add_field(name="<:info:1288631394502709268> Crear un canal de Voz:", value="> Para crear un canal, solo pulsa uno de los botones de debajo, estos marcan la cantidad de usuarios que podrán unirse a él.", inline=True)
-    embed.add_field(name="<:exclamacion:1288628819548176514> Límite de canales:", value="> Cada usuario puede crear un solo canal de voz, este canal desaparecerá si permanece inactivo", inline=False)
+    embed.add_field(name="<:info:1288631394502709268> Cambiar límite de usuarios:", value="> Si ya has creado un canal de voz y quieres cambiar el límite de usuarios del mismo, solo selecciona la cantidad que desees en los botones de debajo", inline=True)
+    embed.add_field(name="<:exclamacion:1288628819548176514> Límite de canales:", value="> Cada usuario puede crear un solo canal de voz, este canal desaparecerá si permanece **inactivo durante 15 minutos**, cuando aparezca con el símbolo `🔇` significará que quedan menos de **5 minutos para desaparecer** si este no se vuelve a utilizar.", inline=False)
+    embed.set_image(url='https://i.imgur.com/8GkOfv1.png')
+    embed.set_footer(text='Delegación de Alumnos de Industriales - UVigo', icon_url='https://cdn.discordapp.com/emojis/1288628804276977735.webp?size=96&quality=lossless')
+    return embed
+
+def linktree_embed() -> discord.Embed:
+    embed = discord.Embed(
+        description=f'''
+        ## <a:flecha:1290411623802208257> ¡Visita nuestra web y Redes Sociales!
+        ### 🔗 [**Nuestra Página Web**]({WEB_DAI_URL}) `{WEB_DAI_URL}`
+        ### 🔗 [**Nuestro Instagram**]({INSTAGRAM_DAI_ACCOUNT_URL}) **@dai_uvigo**
+        ''',
+        color=discord.Color.blue()
+    )
     embed.set_image(url='https://i.imgur.com/8GkOfv1.png')
     embed.set_footer(text='Delegación de Alumnos de Industriales - UVigo', icon_url='https://cdn.discordapp.com/emojis/1288628804276977735.webp?size=96&quality=lossless')
     return embed
