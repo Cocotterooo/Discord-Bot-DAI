@@ -25,7 +25,7 @@ from config import voice_channel_creator_embed
 from utils.interactions.private_poll import voice_poll_cmd
 
 # Soporte y verificación:
-from utils.interactions.support_and_verification import support_and_verification
+from utils.interactions.support_and_verification import support_and_verification, handle_ticket_interaction
 
 # Constantes
 from config import SERVER_ID, LOG_CHANNEL, WELCOME_CHANNEL, INSTAGRAM_DAI_CHANNEL, ADMIN_ROLE, linktree_embed
@@ -95,7 +95,15 @@ async def on_ready():
 @client.event
 async def on_interaction(interaction):
     await dai_roles_interaction(interaction)
+
+    # Verificar si la interacción contiene un "custom_id"
     if interaction.data and interaction.data.get("custom_id"):
+        custom_id = interaction.data["custom_id"]
+        # Verifica si la interacción es un botón del sistema de ticket
+        ticket_related_ids = ["create_ticket", "verify", "close_ticket", "deny_verification", "accept_verification"]
+        if custom_id in ticket_related_ids:
+            await handle_ticket_interaction(interaction)
+        # Si no es un botón de ticket, proceder con el creador de canales
         await create_or_update_channel(client, supabase, interaction)
 
 

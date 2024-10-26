@@ -7,111 +7,100 @@ from config import TICKET_CATEGORY_ID, VERIFICATION_CATEGORY_ID, DAI_MEMBER_ROLE
 class TicketView(ui.View):
     def __init__(self):
         super().__init__(timeout=None)
-
-        # Crear botones manualmente
-        buttons_options = ['📩 Crea un Ticket', '☑️ Verifícate']
-        for option in buttons_options:
-            if option.startswith("📩"):
-                button = discord.ui.Button(label=option, style=ButtonStyle.blurple, custom_id="create_ticket")
-                button.callback = self.create_ticket  # Asignar el callback
-            elif option.startswith("☑️"):
-                button = discord.ui.Button(label=option, style=ButtonStyle.green, custom_id="verify")
-                button.callback = self.verify  # Asignar el callback
-            
-            self.add_item(button)
-
-    async def create_ticket(self, interaction: Interaction):
-        guild = interaction.guild  # Accedemos al servidor desde la interacción
-
-        # Comprueba si ya tiene un ticket abierto:
-        existing_ticket_channel = discord.utils.get(guild.channels, name=f"🎫⦙{interaction.user.name}")
-        if existing_ticket_channel:
-            return await interaction.response.send_message("<:no:1288631410558767156> Ya tienes un ticket abierto.", ephemeral=True)
-
-        category = guild.get_channel(TICKET_CATEGORY_ID)
-        ticket_channel = await category.create_text_channel(name=f"🎫⦙{interaction.user.name}")
-
-        await ticket_channel.set_permissions(guild.default_role, read_messages=False)
-        await ticket_channel.set_permissions(interaction.user, read_messages=True, send_messages=True)
-        await ticket_channel.set_permissions(guild.get_role(DAI_MEMBER_ROLE_ID), read_messages=True, send_messages=True)
-
-        embed = tickets_embed(interaction.user)
-        
-        # Crear vista para el cierre del ticket
-        close_button_view = CloseTicketView()
-        await ticket_channel.send(embed=embed, view=close_button_view)
-
-        await interaction.response.send_message(f"<:correcto:1288631406452412428> Ticket creado: {ticket_channel.mention}", ephemeral=True)
-
-    async def verify(self, interaction: Interaction):
-        guild = interaction.guild  # Accedemos al servidor desde la interacción
-
-        # Comprueba si ya tiene un ticket de verificación abierto:
-        existing_ticket_channel = discord.utils.get(guild.channels, name=f"🛡️⦙{interaction.user.name}")
-        if existing_ticket_channel:
-            return await interaction.response.send_message("<:no:1288631410558767156> Ya tienes un ticket de verificación abierto.", ephemeral=True)
-        
-        category = guild.get_channel(VERIFICATION_CATEGORY_ID)
-        verify_channel = await category.create_text_channel(name=f"🛡️⦙{interaction.user.name}")
-
-        await verify_channel.set_permissions(guild.default_role, read_messages=False)
-        await verify_channel.set_permissions(interaction.user, read_messages=True, send_messages=True)
-        await verify_channel.set_permissions(guild.get_role(DAI_MEMBER_ROLE_ID), read_messages=True, send_messages=True)
-
-        embed = verification_embed(interaction.user)
-        
-        # Crear vista para la verificación
-        verification_view = VerificationView(interaction.user)
-        await verify_channel.send(embed=embed, view=verification_view)
-
-        await interaction.response.send_message(f"<:correcto:1288631406452412428> Canal de verificación creado: {verify_channel.mention}", ephemeral=True)
+        self.add_item(discord.ui.Button(label="📩 Crea un Ticket", style=ButtonStyle.blurple, custom_id="create_ticket"))
+        self.add_item(discord.ui.Button(label="☑️ Verifícate", style=ButtonStyle.green, custom_id="verify"))
 
 class CloseTicketView(ui.View):
     def __init__(self):
         super().__init__(timeout=None)
-
-        # Crear el botón de cerrar ticket manualmente
-        close_button = discord.ui.Button(label="Cerrar Ticket", style=ButtonStyle.red, custom_id="close_ticket")
-        close_button.callback = self.close_ticket  # Asignar el callback
-        self.add_item(close_button)
-
-    async def close_ticket(self, interaction: Interaction):
-        await interaction.channel.delete()
+        self.add_item(discord.ui.Button(label="Cerrar Ticket", style=ButtonStyle.red, custom_id="close_ticket"))
 
 class VerificationView(ui.View):
     def __init__(self, user: discord.User):
         super().__init__(timeout=None)
-        self.user = user
+        self.user = user  # Guardamos al usuario que creó el canal
+        self.add_item(discord.ui.Button(label="No Verificar", style=ButtonStyle.red, custom_id="deny_verification"))
+        self.add_item(discord.ui.Button(label="Verificar", style=ButtonStyle.green, custom_id="accept_verification"))
 
-        # Crear botones de verificación manualmente
-        buttons_options = ['No Verificar', 'Verificar']
-        for option in buttons_options:
-            if option == 'No Verificar':
-                button = discord.ui.Button(label=option, style=ButtonStyle.red, custom_id="deny_verification")
-                button.callback = self.deny_verification  # Asignar el callback
-            elif option == 'Verificar':
-                button = discord.ui.Button(label=option, style=ButtonStyle.green, custom_id="accept_verification")
-                button.callback = self.accept_verification  # Asignar el callback
-            
-            self.add_item(button)
+async def create_ticket(interaction: discord.Interaction):
+    guild = interaction.guild
+    existing_ticket_channel = discord.utils.get(guild.channels, name=f"🎫⦙{interaction.user.name}")
+    if existing_ticket_channel:
+        return await interaction.response.send_message("<:no:1288631410558767156> Ya tienes un ticket abierto.", ephemeral=True)
 
-    async def deny_verification(self, interaction: Interaction):
-        guild = interaction.guild  # Accedemos al servidor
-        support_role = guild.get_role(DAI_MEMBER_ROLE_ID)
-        if support_role not in interaction.user.roles:
-            return await interaction.response.send_message("<:no:1288631410558767156> No tienes permiso para usar este botón.", ephemeral=True)
-        
-        await interaction.channel.delete()
+    category = guild.get_channel(TICKET_CATEGORY_ID)
+    ticket_channel = await category.create_text_channel(name=f"🎫⦙{interaction.user.name}")
 
-    async def accept_verification(self, interaction: Interaction):
-        guild = interaction.guild  # Accedemos al servidor
-        support_role = guild.get_role(DAI_MEMBER_ROLE_ID)
-        if support_role not in interaction.user.roles:
-            return await interaction.response.send_message("<:no:1288631410558767156> No tienes permiso para usar este botón.", ephemeral=True)
+    await ticket_channel.set_permissions(guild.default_role, read_messages=False)
+    await ticket_channel.set_permissions(interaction.user, read_messages=True, send_messages=True)
+    await ticket_channel.set_permissions(guild.get_role(DAI_MEMBER_ROLE_ID), read_messages=True, send_messages=True)
 
-        verified_role = guild.get_role(VERIFIED_ROLE_ID)
-        await self.user.add_roles(verified_role)
-        await interaction.channel.delete()
+    embed = tickets_embed(interaction.user)
+    await ticket_channel.send(embed=embed, view=CloseTicketView())
+
+    await interaction.response.send_message(f"<:correcto:1288631406452412428> Ticket creado: {ticket_channel.mention}", ephemeral=True)
+
+async def verify(interaction: discord.Interaction):
+    guild = interaction.guild
+    existing_ticket_channel = discord.utils.get(guild.channels, name=f"✅⦙{interaction.user.name}")
+    if existing_ticket_channel:
+        return await interaction.response.send_message("<:no:1288631410558767156> Ya tienes un ticket de verificación abierto.", ephemeral=True)
+
+    category = guild.get_channel(VERIFICATION_CATEGORY_ID)
+    verify_channel = await category.create_text_channel(name=f"✅⦙{interaction.user.name}")
+
+    await verify_channel.set_permissions(guild.default_role, read_messages=False)
+    await verify_channel.set_permissions(interaction.user, read_messages=True, send_messages=True)
+    await verify_channel.set_permissions(guild.get_role(DAI_MEMBER_ROLE_ID), read_messages=True, send_messages=True)
+
+    embed = verification_embed(interaction.user)
+    await verify_channel.send(embed=embed, view=VerificationView(interaction.user))
+
+    await interaction.response.send_message(f"<:correcto:1288631406452412428> Canal de verificación creado: {verify_channel.mention}", ephemeral=True)
+
+async def close_ticket(interaction: discord.Interaction):
+    await interaction.channel.delete()
+
+async def deny_verification(interaction: discord.Interaction):
+    guild = interaction.guild
+    support_role = guild.get_role(DAI_MEMBER_ROLE_ID)
+    if support_role not in interaction.user.roles:
+        return await interaction.response.send_message("<:no:1288631410558767156> No tienes permiso para usar este botón.", ephemeral=True)
+
+    await interaction.channel.delete()
+
+async def accept_verification(interaction: discord.Interaction):
+    guild = interaction.guild
+    support_role = guild.get_role(DAI_MEMBER_ROLE_ID)
+    if support_role not in interaction.user.roles:
+        return await interaction.response.send_message("<:no:1288631410558767156> No tienes permiso para usar este botón.", ephemeral=True)
+
+    # Extraer el nombre del usuario del canal
+    user_name = interaction.channel.name.replace("✅⦙", "")
+    
+    # Buscar al usuario en el servidor
+    member = discord.utils.get(guild.members, name=user_name)
+    if member is None:
+        return await interaction.response.send_message("<:no:1288631410558767156> No se encontró al usuario correspondiente.", ephemeral=True)
+
+    verified_role = guild.get_role(VERIFIED_ROLE_ID)
+    await member.add_roles(verified_role)  # Asignar el rol al usuario encontrado
+    await interaction.channel.delete()
+
+async def handle_ticket_interaction(interaction: discord.Interaction):
+    """Encapsula el manejo de interacciones relacionadas con tickets."""
+    if interaction.data and interaction.data.get("custom_id"):
+        custom_id = interaction.data.get("custom_id")
+        if custom_id == "create_ticket":
+            await create_ticket(interaction)
+        elif custom_id == "verify":
+            await verify(interaction)
+        elif custom_id == "close_ticket":
+            await close_ticket(interaction)
+        elif custom_id == "deny_verification":
+            await deny_verification(interaction)
+        elif custom_id == "accept_verification":
+            await accept_verification(interaction)
 
 def support_and_verification(bot):
     @bot.tree.command(name="soporte_verificacion", description="Enviar el embed principal")
