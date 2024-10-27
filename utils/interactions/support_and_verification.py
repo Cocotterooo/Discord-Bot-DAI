@@ -36,13 +36,18 @@ async def create_ticket(interaction: discord.Interaction):
     await ticket_channel.set_permissions(guild.get_role(DAI_MEMBER_ROLE_ID), read_messages=True, send_messages=True)
 
     embed = tickets_embed(interaction.user)
-    await ticket_channel.send(embed=embed, view=CloseTicketView())
+    await ticket_channel.send(interaction.user.mention, embed=embed, view=CloseTicketView())
 
     await interaction.response.send_message(f"<:correcto:1288631406452412428> Ticket creado: {ticket_channel.mention}", ephemeral=True)
 
 async def verify(interaction: discord.Interaction):
     guild = interaction.guild
     existing_ticket_channel = discord.utils.get(guild.channels, name=f"✅⦙{interaction.user.name}")
+    # Verificar que el usuario aun no tenga el rol verificado
+    verified_role = guild.get_role(VERIFIED_ROLE_ID)
+    if verified_role in interaction.user.roles:
+        return await interaction.response.send_message("<:no:1288631410558767156> Ya estás verificado.", ephemeral=True)
+    # Verificar si el usuario ya tiene un ticket de verificación abierto
     if existing_ticket_channel:
         return await interaction.response.send_message("<:no:1288631410558767156> Ya tienes un ticket de verificación abierto.", ephemeral=True)
 
@@ -54,7 +59,7 @@ async def verify(interaction: discord.Interaction):
     await verify_channel.set_permissions(guild.get_role(DAI_MEMBER_ROLE_ID), read_messages=True, send_messages=True)
 
     embed = verification_embed(interaction.user)
-    await verify_channel.send(embed=embed, view=VerificationView(interaction.user))
+    await verify_channel.send(interaction.user.mention, embed=embed, view=VerificationView(interaction.user))
 
     await interaction.response.send_message(f"<:correcto:1288631406452412428> Canal de verificación creado: {verify_channel.mention}", ephemeral=True)
 
@@ -104,6 +109,7 @@ async def handle_ticket_interaction(interaction: discord.Interaction):
 
 def support_and_verification(bot):
     @bot.tree.command(name="soporte_verificacion", description="Enviar el embed principal")
+    @app_commands.describe(channel='La ID del chat donde se enviará el embed')
     @app_commands.checks.has_role(ADMIN_ROLE)
     async def send_main_embed(interaction: discord.Interaction, channel: discord.TextChannel):
         """Slash Command que envía el embed principal al canal seleccionado"""

@@ -10,7 +10,7 @@ from config import ADMIN_ROLE
 
 def voice_channel_creator(bot: commands.Bot, admin_role: int, embed: discord.Embed):
     @bot.tree.command(name="creador_canales_voz", description="Envía un embed con botones para crear canales de voz personalizados.")
-    @app_commands.describe(creator_channel_id='La ID del chat donde se enviará el embed')
+    @app_commands.describe(channel='La ID del chat donde se enviará el embed')
     @app_commands.checks.has_role(ADMIN_ROLE)
     async def enviar_embed(interaction: discord.Interaction, channel: discord.TextChannel):
         await interaction.response.defer(thinking=True)  # Indica que se está procesando

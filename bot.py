@@ -121,7 +121,7 @@ async def on_member_join(member):
         await print(f'Ocurrió un error al generar la imagen de Bienvenida de {nombre_usuario}')
     else:
         await channel.send(file=discord.File(fp=image_binary, filename='bienvenida.png'))
-        await channel.send(f'<:entrar:1288631392070012960> {member.mention} ¡Bienvenid@ a la **Comunidad Oficial** de la **EEI**! 🎉 \n<:verificado:1288628715982553188> Si eres estudiante en la **EEI verifica tu cuenta** en <#1299775062215229460>\n-#       **Delegación de Alumnos** EEI - Uvigo')
+        await channel.send(f'<:entrar:1288631392070012960> {member.mention} ¡Bienvenid@ a la **Comunidad Oficial** de la **EEI**! 🎉 \n> <:verificado:1288628715982553188> Si eres estudiante en la **EEI verifica tu cuenta** en <#1299775062215229460>\n-#       **Delegación de Alumnos** EEI - Uvigo')
 
 
 @client.tree.command(name='bienvenida', description='Imagen de Bienvenida')

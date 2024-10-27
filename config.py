@@ -19,6 +19,7 @@ ID_ASUNTOS_EXTERIORES = 1292466970687442984
 ID_DEPORTES = 1292468137845067776
 ADMIN_ROLE = 1288552528484630598
 DAI_MEMBER_ROLE_ID = 1288206919118618839
+DAI_TUTORING_ROLE_ID = 1288553111119462451
 VERIFIED_ROLE_ID = 1299781091451867146
 
 def dai_color() -> discord.Color:
@@ -55,11 +56,16 @@ def dai_roles_embed():
         > <@&1292466392439722016> 
         > <@&1292467283284852888> 
         > <@&1292467186320805948> 
+        ### <:escudo:1288628696391090299> Directiva Extendida:
+        > <@&1292472596146815037> 
+        > <@&1296745099497312267> 
+        > <@&1299901349994954794> 
+        > <@&1299901080745934888> 
         ### <:us:1288631396364976128> Comisiones Delegadas:
-        > <@&1292466863707521167>
         > <@&1292466487247896699>
         > <@&1292466970687442984>
         > <@&1292468137845067776>
+        > <@&1292466863707521167>
         ### <:exclamacion:1288628819548176514> Especiales:
         > <@&1288552528484630598> <:desarrollador:1288628718423638037>
         > <@&1288206919118618839> <:moderador:1288628804276977735>
@@ -68,7 +74,7 @@ def dai_roles_embed():
         ''',
         color=discord.Color.blue()
     )
-    embed.add_field(name="<:verificado:1288628715982553188> Roles Especiales", value="Para obtener un rol de las secciones **Directiva** o **Especiales**, contacta con <@&1288552528484630598>.", inline=False)
+    embed.add_field(name="<:verificado:1288628715982553188> Roles Especiales", value="Para obtener un rol de las secciones **Directiva**, **Directiva Extendida** o **Especiales**, contacta con <@&1288552528484630598>.", inline=False)
     embed.add_field(name="<:verificado:1288628715982553188> Comisiones Delegadas", value="Para **obtener** o **eliminar** un rol de una Comisión Delegada solo haz click en los botones.", inline=False)
     embed.set_image(url='https://i.imgur.com/8GkOfv1.png')
     embed.set_footer(text='Delegación de Alumnos de Industriales - UVigo', icon_url='https://cdn.discordapp.com/emojis/1288628804276977735.webp?size=96&quality=lossless')

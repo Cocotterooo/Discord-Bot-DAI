@@ -4,10 +4,11 @@ from discord.ext import commands
 from discord import Embed, ButtonStyle
 from discord.ui import Button, View
 
-from config import ADMIN_ROLE, DAI_ROLES_CHANNEL_ID, dai_roles_embed, ID_INFRAESTRUCTURAS, ID_COMUNICACION, ID_ASUNTOS_EXTERIORES, ID_DEPORTES
+from config import ADMIN_ROLE, DAI_MEMBER_ROLE_ID, DAI_TUTORING_ROLE_ID, dai_roles_embed, ID_INFRAESTRUCTURAS, ID_COMUNICACION, ID_ASUNTOS_EXTERIORES, ID_DEPORTES
 
 def dai_roles(bot: commands.Bot):
     @bot.tree.command(name="dai_roles", description="Envía un embed con botones para asignar o remover roles")
+    @app_commands.describe(channel='La ID del chat donde se enviará el embed')
     @app_commands.checks.has_role(ADMIN_ROLE)
     async def enviar_embed(interaction: discord.Interaction, channel: discord.TextChannel):
         await interaction.response.defer(thinking=True)  # Indica que se está procesando
@@ -28,7 +29,7 @@ def dai_roles(bot: commands.Bot):
         view.add_item(button4)
         
         # Enviar el mensaje con el embed y los botones
-        await channel.send(embed=embed, view=view)
+        await channel.send(f'{discord.utils.get(interaction.guild.roles, id=DAI_MEMBER_ROLE_ID).mention} {discord.utils.get(interaction.guild.roles, id=DAI_TUTORING_ROLE_ID).mention}', embed=embed, view=view)
         await interaction.followup.send("<:correcto:1288631406452412428> Selector de roles enviado.", ephemeral=True)
 
     @enviar_embed.error
