@@ -27,6 +27,9 @@ from utils.interactions.private_poll import voice_poll_cmd
 # Soporte y verificación:
 from utils.interactions.support_and_verification import support_and_verification, handle_ticket_interaction
 
+# Comandos de Asociaciones
+from utils.interactions.asociations import nuevo_spacelab, eliminar_spacelab, nuevo_motorsport, eliminar_motorsport, nuevo_ces, eliminar_ces, setup_spacelab, setup_motorsport, setup_ces
+
 # Constantes
 from config import SERVER_ID, LOG_CHANNEL, WELCOME_CHANNEL, INSTAGRAM_DAI_CHANNEL, ADMIN_ROLE, linktree_embed
 
@@ -62,6 +65,15 @@ class Bot(discord.Client):
         voice_channel_creator(self, ADMIN_ROLE, voice_channel_creator_embed())
         voice_poll_cmd(self)
         support_and_verification(self)
+        nuevo_spacelab(self)
+        eliminar_spacelab(self)
+        nuevo_motorsport(self)
+        eliminar_motorsport(self)
+        nuevo_ces(self)
+        eliminar_ces(self)
+        setup_spacelab(self)
+        setup_motorsport(self)
+        setup_ces(self)
         # Copiamos los comandos globales a nuestro servidor 
         # Esto evita tener que esperar la propagación global de hasta una hora.
         self.tree.copy_global_to(guild=MY_GUILD)

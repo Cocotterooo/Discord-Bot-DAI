@@ -108,7 +108,7 @@ async def handle_ticket_interaction(interaction: discord.Interaction):
             await accept_verification(interaction)
 
 def support_and_verification(bot):
-    @bot.tree.command(name="soporte_verificacion", description="Enviar el embed principal")
+    @bot.tree.command(name="setup_soporte_verificacion", description="Enviar el embed principal")
     @app_commands.describe(channel='La ID del chat donde se enviará el embed')
     @app_commands.checks.has_role(ADMIN_ROLE)
     async def send_main_embed(interaction: discord.Interaction, channel: discord.TextChannel):

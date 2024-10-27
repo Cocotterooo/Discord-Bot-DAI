@@ -22,6 +22,42 @@ DAI_MEMBER_ROLE_ID = 1288206919118618839
 DAI_TUTORING_ROLE_ID = 1288553111119462451
 VERIFIED_ROLE_ID = 1299781091451867146
 
+# Asociaciones:
+ASOCIATION_ROLE_IDS = {
+    'spacelab': {
+        'coord': 1300181833081950299, 
+        'member': 1300181978166988860
+        },
+    'motorsport': {
+        'coord': 1300184532200329339, 
+        'member': 1300184607786012732
+        },
+    'ces': {
+        'coord': 1300184021615247380, 
+        'member': 1300184160068964403
+        }
+}
+ASOCIATION_COMMANDS = {
+    'spacelab': {
+        'nuevo': '/nuevo_spacelab',
+        'eliminar': '/eliminar_spacelab',
+        },
+    'motorsport': {
+        'nuevo': '/nuevo_motorsport',
+        'eliminar': '/eliminar_motorsport',
+        },
+    'ces': {
+        'nuevo': '/nuevo_ces',
+        'eliminar': '/eliminar_ces',
+        },
+    }
+ASOCIATION_CHANNELS = {
+    'spacelab': 1300183021416349788,
+    'motorsport': 1288508046057930804,
+    'ces': 1300189175747842068,
+}
+
+
 def dai_color() -> discord.Color:
     return discord.Color.from_str('#00ACE2')
 
@@ -39,7 +75,7 @@ def instagram_embed(permalink: str, likes: int, comments: int, post_id: int, dat
 
         ❤️ {likes} | 💬 {comments}
         ''',
-        color=discord.Color.blue()  # Color del borde del embed
+        color=dai_color()  # Color del borde del embed
     )
     embed.set_image(url=media_url)
     embed.set_footer(text=f"ID: {post_id} - {date_published}\nDelegación de Alumnos de Industriales - UVigo")
@@ -72,7 +108,7 @@ def dai_roles_embed():
         > <@&1288553111119462451>
         ### Selección:
         ''',
-        color=discord.Color.blue()
+        color=dai_color()
     )
     embed.add_field(name="<:verificado:1288628715982553188> Roles Especiales", value="Para obtener un rol de las secciones **Directiva**, **Directiva Extendida** o **Especiales**, contacta con <@&1288552528484630598>.", inline=False)
     embed.add_field(name="<:verificado:1288628715982553188> Comisiones Delegadas", value="Para **obtener** o **eliminar** un rol de una Comisión Delegada solo haz click en los botones.", inline=False)
@@ -89,7 +125,7 @@ def voice_channel_creator_embed() -> discord.Embed:
         
         ### <:moderador:1288628804276977735> Detalles:
         ''',
-        color=discord.Color.blue()
+        color=dai_color()
     )
     embed.add_field(name="<:info:1288631394502709268> Crear un canal de Voz:", value="> Para crear un canal, solo pulsa uno de los botones de debajo, estos marcan la cantidad de usuarios que podrán unirse a él.", inline=True)
     embed.add_field(name="<:info:1288631394502709268> Cambiar límite de usuarios:", value="> Si ya has creado un canal de voz y quieres cambiar el límite de usuarios del mismo, solo selecciona la cantidad que desees en los botones de debajo", inline=True)
@@ -105,7 +141,7 @@ def linktree_embed() -> discord.Embed:
         ### 🔗 [**Nuestra Página Web**]({WEB_DAI_URL}) `{WEB_DAI_URL}`
         ### 🔗 [**Nuestro Instagram**]({INSTAGRAM_DAI_ACCOUNT_URL}) **@dai_uvigo**
         ''',
-        color=discord.Color.blue()
+        color=dai_color()
     )
     embed.set_image(url='https://i.imgur.com/8GkOfv1.png')
     embed.set_footer(text='Delegación de Alumnos de Industriales - UVigo', icon_url='https://cdn.discordapp.com/emojis/1288628804276977735.webp?size=96&quality=lossless')
@@ -155,6 +191,49 @@ def verification_embed(user: discord.User) -> discord.Embed:
         ''',
         color=dai_color()
     )
+    embed.set_image(url='https://i.imgur.com/8GkOfv1.png')
+    embed.set_footer(text='Delegación de Alumnos de Industriales - UVigo', icon_url='https://cdn.discordapp.com/emojis/1288628804276977735.webp?size=96&quality=lossless')
+    return embed
+
+
+def spacelab_info_embed() -> discord.Embed:
+    embed = discord.Embed(
+        description=f'''
+        ## <a:flecha:1290411623802208257> **¡Bienvenid@ a la categoría de SpaceLab!**
+        ''',
+        color=dai_color()
+    )
+    embed.add_field(name='<:info:1288631394502709268> Configuración de la Categoría', value=f'> La categoría es totalemte configurable por el rol <@&{ASOCIATION_ROLE_IDS["spacelab"]["coord"]}>', inline=False)
+    embed.add_field(name='<:entrar:1288631392070012960> Añadir nuevos Miembros', value=f'> Utiliza el comando `{ASOCIATION_COMMANDS["spacelab"]["nuevo"]}`\n > Otorgará el rol <@&{ASOCIATION_ROLE_IDS["spacelab"]["member"]}> al usuario', inline=False)
+    embed.add_field(name='<:salir:1288975442828726374> Eliminar Miembros', value=f'> Utiliza el comando `{ASOCIATION_COMMANDS["spacelab"]["eliminar"]}`\n > Eliminará el rol <@&{ASOCIATION_ROLE_IDS["spacelab"]["member"]}> del usuario', inline=False)
+    embed.set_image(url='https://i.imgur.com/8GkOfv1.png')
+    embed.set_footer(text='Delegación de Alumnos de Industriales - UVigo', icon_url='https://cdn.discordapp.com/emojis/1288628804276977735.webp?size=96&quality=lossless')
+    return embed
+
+def motorsport_info_embed() -> discord.Embed:
+    embed = discord.Embed(
+        description=f'''
+        ## <a:flecha:1290411623802208257> **¡Bienvenid@ a la categoría de MotorSport!**
+        ''',
+        color=dai_color()
+    )
+    embed.add_field(name='<:info:1288631394502709268> Configuración de la Categoría', value=f'> La categoría es totalemte configurable por el rol <@&{ASOCIATION_ROLE_IDS["motorsport"]["coord"]}>', inline=False)
+    embed.add_field(name='<:entrar:1288631392070012960> Añadir nuevos Miembros', value=f'> Utiliza el comando `{ASOCIATION_COMMANDS["motorsport"]["nuevo"]}`\n > Otorgará el rol <@&{ASOCIATION_ROLE_IDS["motorsport"]["member"]}> al usuario', inline=False)
+    embed.add_field(name='<:salir:1288975442828726374> Eliminar Miembros', value=f'> Utiliza el comando `{ASOCIATION_COMMANDS["motorsport"]["eliminar"]}`\n > Eliminará el rol <@&{ASOCIATION_ROLE_IDS["motorsport"]["member"]}> del usuario', inline=False)
+    embed.set_image(url='https://i.imgur.com/8GkOfv1.png')
+    embed.set_footer(text='Delegación de Alumnos de Industriales - UVigo', icon_url='https://cdn.discordapp.com/emojis/1288628804276977735.webp?size=96&quality=lossless')
+    return embed
+
+def ces_info_embed() -> discord.Embed:
+    embed = discord.Embed(
+        description=f'''
+        ## <a:flecha:1290411623802208257> **¡Bienvenid@ a la categoría de CES!**
+        ''',
+        color=dai_color()
+    )
+    embed.add_field(name='<:info:1288631394502709268> Configuración de la Categoría', value=f'> La categoría es totalemte configurable por el rol <@&{ASOCIATION_ROLE_IDS["ces"]["coord"]}>', inline=False)
+    embed.add_field(name='<:entrar:1288631392070012960> Añadir nuevos Miembros', value=f'> Utiliza el comando `{ASOCIATION_COMMANDS["ces"]["nuevo"]}`\n > Otorgará el rol <@&{ASOCIATION_ROLE_IDS["ces"]["member"]}> al usuario', inline=False)
+    embed.add_field(name='<:salir:1288975442828726374> Eliminar Miembros', value=f'> Utiliza el comando `{ASOCIATION_COMMANDS["ces"]["eliminar"]}`\n > Eliminará el rol <@&{ASOCIATION_ROLE_IDS["ces"]["member"]}> del usuario', inline=False)
     embed.set_image(url='https://i.imgur.com/8GkOfv1.png')
     embed.set_footer(text='Delegación de Alumnos de Industriales - UVigo', icon_url='https://cdn.discordapp.com/emojis/1288628804276977735.webp?size=96&quality=lossless')
     return embed
