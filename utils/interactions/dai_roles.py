@@ -7,7 +7,7 @@ from discord.ui import Button, View
 from config import ADMIN_ROLE, DAI_MEMBER_ROLE_ID, DAI_TUTORING_ROLE_ID, dai_roles_embed, ID_INFRAESTRUCTURAS, ID_COMUNICACION, ID_ASUNTOS_EXTERIORES, ID_DEPORTES
 
 def dai_roles(bot: commands.Bot):
-    @bot.tree.command(name="dai_roles", description="Envía un embed con botones para asignar o remover roles")
+    @bot.tree.command(name="setup_dai_roles", description="Envía un embed con botones para asignar o remover roles")
     @app_commands.describe(channel='La ID del chat donde se enviará el embed')
     @app_commands.checks.has_role(ADMIN_ROLE)
     async def enviar_embed(interaction: discord.Interaction, channel: discord.TextChannel):
