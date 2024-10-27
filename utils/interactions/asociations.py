@@ -97,7 +97,7 @@ async def gestionar_rol(interaction: discord.Interaction, user, asociacion, acci
 # SETUP INFO OF ASOCIATIONS
 
 def setup_spacelab(bot):
-    @bot.tree.command(name="setup_spacelab", description="Enviar el embed de información de Spacelab")
+    @bot.tree.command(name="setup_spacelab", description="Enviar el embed de información de la categoría de SpaceLab")
     @app_commands.describe(channel='La ID del chat donde se enviará el embed')
     @app_commands.checks.has_role(ADMIN_ROLE)
     async def send_main_embed(interaction: discord.Interaction, channel: discord.TextChannel):
@@ -113,7 +113,7 @@ def setup_spacelab(bot):
 
 
 def setup_motorsport(bot):
-    @bot.tree.command(name="setup_motorsport", description="Enviar el embed de información de Spacelab")
+    @bot.tree.command(name="setup_motorsport", description="Enviar el embed de información de la categoría de Motorsport")
     @app_commands.describe(channel='La ID del chat donde se enviará el embed')
     @app_commands.checks.has_role(ADMIN_ROLE)
     async def send_main_embed(interaction: discord.Interaction, channel: discord.TextChannel):
@@ -129,7 +129,7 @@ def setup_motorsport(bot):
 
 
 def setup_ces(bot):
-    @bot.tree.command(name="setup_ces", description="Enviar el embed de información de Spacelab")
+    @bot.tree.command(name="setup_ces", description="Enviar el embed de información de la categoría de CES")
     @app_commands.describe(channel='La ID del chat donde se enviará el embed')
     @app_commands.checks.has_role(ADMIN_ROLE)
     async def send_main_embed(interaction: discord.Interaction, channel: discord.TextChannel):
