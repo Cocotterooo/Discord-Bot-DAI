@@ -1,124 +1,157 @@
 import discord
 from discord import app_commands
 from discord.ui import Button, View
+import asyncio
+from config import DAI_MEMBER_ROLE_ID
 
 class PollView(View):
-    def __init__(self, title, options, author_voice_channel):
-        super().__init__(timeout=None)
+    def __init__(self, title, options, author_voice_channel, duration):
+        super().__init__(timeout=duration)
+        
+        # Opciones y colores predefinidos
+        default_options = ['Sí', 'No', 'Abstención']
+        default_styles = [discord.ButtonStyle.success, discord.ButtonStyle.danger, discord.ButtonStyle.primary]
+
+        # Usa opciones y estilos predefinidos si no se dan opciones válidas
+        if not options:
+            options = default_options
+            styles = default_styles
+        else:
+            # Verifica si hay suficientes opciones
+            if len(options) < 2:
+                raise ValueError("Debes proporcionar al menos 2 opciones si decides personalizarlas.")
+            # Todas las opciones personalizadas tendrán el color azul
+            styles = [discord.ButtonStyle.primary] * len(options)
+
         self.votes = {option: {'label': option, 'count': 0} for option in options}
         self.author_voice_channel = author_voice_channel
         self.title = title
-        self.voted_users = set()  # Conjunto para rastrear quién ha votado
+        self.voted_users = set()
+        self.duration = duration
+        self.end_time = discord.utils.utcnow().timestamp() + duration
 
-        # Crear botones para cada opción
-        for option in options:
-            if option.lower() == 'sí':
-                button = Button(label=option, style=discord.ButtonStyle.success, custom_id=option)  # Verde
-            elif option.lower() == 'no':
-                button = Button(label=option, style=discord.ButtonStyle.danger, custom_id=option)  # Rojo
-            else:
-                button = Button(label=option, style=discord.ButtonStyle.primary, custom_id=option)  # Color por defecto
+        # Crear botones para cada opción, añadiendo índice al custom_id para evitar duplicados
+        for idx, option in enumerate(options):
+            style = styles[idx]  # Aplica el estilo correspondiente
+            button = Button(label=option, style=style, custom_id=f"{option}_{idx}")
             button.callback = self.vote_callback
             self.add_item(button)
 
-
     async def vote_callback(self, interaction: discord.Interaction):
+        # Verifica si el usuario tiene el rol requerido
+        role_required_id = DAI_MEMBER_ROLE_ID
+        if role_required_id not in [role.id for role in interaction.user.roles]:
+            await interaction.response.send_message(f'<:no:1288631410558767156> Esta votación solo puede ser respondida por <@&{DAI_MEMBER_ROLE_ID}>.', ephemeral=True)
+            return
+        
         # Verifica si el usuario está en el mismo canal de voz que el autor de la encuesta
         if interaction.user.voice and interaction.user.voice.channel.id == self.author_voice_channel.id:
             if interaction.user.id in self.voted_users:
                 await interaction.response.send_message('<:no:1288631410558767156> Ya has votado en esta encuesta.', ephemeral=True)
-                return  # El usuario ya votó
+                return
 
-            option_id = interaction.data['custom_id']  # Usamos el custom_id para identificar la opción
-            option_label = self.votes[option_id]['label']  # Obtiene la etiqueta de la opción
+            option_id = interaction.data['custom_id'].rsplit("_", 1)[0]  # Elimina el índice para obtener la opción original
+            option_label = self.votes[option_id]['label']
             print(f'{interaction.user} ha votado la opción: {option_label}')
 
             # Aumenta el voto en la opción seleccionada
             if option_id in self.votes:
-                self.votes[option_id]['count'] += 1  # Aumenta el conteo de votos
-                self.voted_users.add(interaction.user.id)  # Agrega el ID del usuario al conjunto
-                
-                # Edita el mensaje de la interacción para actualizar el embed
-                await interaction.response.send_message(embed=self.create_embed())  # Envía el nuevo embed
-                # Responde a la interacción que ha votado
-                await interaction.followup.send(f'<:correcto:1288631406452412428> Has votado la opción: **{option_label}**', ephemeral=True)
+                self.votes[option_id]['count'] += 1
+                self.voted_users.add(interaction.user.id)
 
+                # Actualiza el embed con los nuevos resultados
+                await self.message.edit(embed=self.create_embed())
+                await interaction.response.send_message(f'<:correcto:1288631406452412428> Has votado la opción: **{option_label}**', ephemeral=True)
             else:
                 await interaction.response.send_message("Opción no válida.", ephemeral=True)
         else:
             await interaction.response.send_message('<:no:1288631410558767156> Debes estar en el mismo canal de voz para votar.', ephemeral=True)
 
-
     def create_embed(self):
-        embed = discord.Embed(title=self.title, description='Resultados actuales de la encuesta:', color=discord.Color.blue())
+        remaining_time = max(0, int(self.end_time - discord.utils.utcnow().timestamp())) if self.end_time else None
+        time_display = f'<a:online:1288631919352877097> Abierta - {remaining_time // 60}:{remaining_time % 60:02d}' if remaining_time else '<a:offline:1288631912180744205> Encuesta finalizada'
         total_votes = sum(data['count'] for data in self.votes.values())
+        description = f'''
+        ## Votación: {self.title}
+        ➤ Estado: **{time_display}**
+        ➤ Total de votos: **{total_votes}**
+        '''
+        embed = discord.Embed(description=description, color=discord.Color.blue())
 
         for option_id, data in self.votes.items():
             count = data['count']
             percentage = (count / total_votes * 100) if total_votes > 0 else 0
-            bar_length = 10  # Longitud de la barra de progreso
-            filled_length = int(bar_length * (percentage / 100))  # Cuántos bloques llenos
-            bar = '🟦' * filled_length + '⬛' * (bar_length - filled_length)  # Representación gráfica
-
-            # Agrega el campo con la información de los votos y el porcentaje
+            bar_length = 13
+            filled_length = int(bar_length * (percentage / 100))
+            bar = '🟦' * filled_length + '⬛' * (bar_length - filled_length)
             embed.add_field(name=f'<:chat_ind:1288628721842130976>  {data["label"]}', value=f'> {count} votos ({percentage:.1f}%) \n> {bar}', inline=False)
-            embed.set_image(url='https://i.imgur.com/8GkOfv1.png')
-            embed.set_footer(text='Delegación de Alumnos de Industriales - UVigo', icon_url='https://cdn.discordapp.com/emojis/1288628804276977735.webp?size=96&quality=lossless')
-
+        
+        embed.set_image(url='https://i.imgur.com/8GkOfv1.png')
+        embed.set_footer(text='Delegación de Alumnos de Industriales - UVigo', icon_url='https://cdn.discordapp.com/emojis/1288628804276977735.webp?size=96&quality=lossless')
         return embed
+
+    async def on_timeout(self):
+        for child in self.children:
+            child.disabled = True  # Desactiva todos los botones al finalizar la encuesta
+        await self.message.edit(embed=self.create_embed(), view=self)
 
 
 class VoicePollCommand:
     def __init__(self, bot):
         self.bot = bot
 
-    async def voice_poll(self, interaction: discord.Interaction, title: str, option1: str = None, 
-                         option2: str = None, option3: str = None, option4: str = None, 
-                         option5: str = None, option6: str = None, option7: str = None, 
-                         option8: str = None, option9: str = None, option10: str = None):
-        
-        # Verifica si el usuario está en un canal de voz
+    async def voice_poll(self, interaction: discord.Interaction, title: str, options: str = None, duration: int = None):
         if not interaction.user.voice or not interaction.user.voice.channel:
             await interaction.response.send_message('<:no:1288631410558767156> Debes estar en un canal de voz para crear una encuesta.', ephemeral=True)
             return
 
-        # Si no se proporcionan opciones, usa opciones predeterminadas
-        options = [opt for opt in [option1, option2, option3, option4, option5, 
-                                   option6, option7, option8, option9, option10] if opt]
-        if not options:
-            options = ['Sí', 'No', 'Abstención']
-
-        # Valida el número de opciones
-        if len(options) < 2:
-            await interaction.response.send_message('<:no:1288631410558767156> Debes proporcionar al menos 2 opciones para la encuesta.', ephemeral=True)
-            return
-        elif len(options) > 10:
-            await interaction.response.send_message('<:no:1288631410558767156> Puedes proporcionar un máximo de 10 opciones para la encuesta.', ephemeral=True)
+        # Valida si las opciones están duplicadas, en caso de que haya opciones
+        options_list = [opt.strip() for opt in options.split(',')] if options else None
+        if options_list and len(options_list) != len(set(options_list)):  # Revisa si hay duplicados
+            await interaction.response.send_message('<:no:1288631410558767156> No puedes tener opciones duplicadas en la encuesta.', ephemeral=True)
             return
 
-        # Crea la vista de botones con opciones y la ID del canal de voz del autor
-        view = PollView(title=title, options=options, author_voice_channel=interaction.user.voice.channel)
+        # Valida que la duración sea positiva
+        if not duration or duration <= 0:
+            await interaction.response.send_message('<:no:1288631410558767156> Debes proporcionar una duración válida para la encuesta.', ephemeral=True)
+            return
 
-        # Crea el embed inicial con el título de la encuesta
-        embed = discord.Embed(title=title, description='Resultados actuales de la encuesta:', color=discord.Color.blue())
-        for option in options:
-            embed.add_field(name=f'<:chat_ind:1288628721842130976>  {option}', value='> 0 votos (0.0%) \n> 🟦' + '⬛' * 9, inline=False)  # Barra inicial vacía
-        embed.set_image(url='https://i.imgur.com/8GkOfv1.png')
-        embed.set_footer(text='Delegación de Alumnos de Industriales - UVigo', icon_url='https://cdn.discordapp.com/emojis/1288628804276977735.webp?size=96&quality=lossless')
-        # Envía el mensaje con el embed y los botones
-        await interaction.response.send_message(embed=embed, view=view)
+        # Crea la vista de botones con opciones y el canal de voz del autor
+        view = PollView(title=title, options=options_list, author_voice_channel=interaction.user.voice.channel, duration=duration)
+
+        # Crea el embed inicial con el título de la encuesta y tiempo restante
+        embed = view.create_embed()
+        
+        # Cambiar de send_message a followup.send para asegurar que el mensaje se guarde correctamente
+        await interaction.response.defer()  # Defer para evitar timeout en la respuesta inicial
+        message = await interaction.followup.send(embed=embed, view=view)
+        view.message = message  # Guarda el mensaje en la vista para que pueda actualizarse
+
+        # Actualizar el contador de tiempo mientras la encuesta está abierta
+        while discord.utils.utcnow().timestamp() < view.end_time:
+            await asyncio.sleep(1)  # Ahora se actualiza cada segundo
+            remaining_time = max(0, int(view.end_time - discord.utils.utcnow().timestamp()))
+            if remaining_time <= 0:
+                break
+            await view.message.edit(embed=view.create_embed())
+        
+        # Finaliza la encuesta cuando se acabe el tiempo
+        await view.on_timeout()
 
 
 def voice_poll_cmd(bot):
-    @bot.tree.command(name='voice_poll', description='Crea una encuesta en la que solo los usuarios en tu canal de voz pueden votar.')
-    @app_commands.describe(title='Título de la encuesta', option1='Opción 1', option2='Opción 2', 
-                        option3='Opción 3', option4='Opción 4', option5='Opción 5', 
-                        option6='Opción 6', option7='Opción 7', option8='Opción 8',
-                        option9='Opción 9', option10='Opción 10')
-    async def voice_poll(interaction: discord.Interaction, title: str, option1: str = None, 
-                        option2: str = None, option3: str = None, option4: str = None, 
-                        option5: str = None, option6: str = None, option7: str = None, 
-                        option8: str = None, option9: str = None, option10: str = None):
+    @bot.tree.command(name='dai_voz_votacion', description='Crea una encuesta en la que solo los usuarios en tu canal de voz pueden votar.')
+    @app_commands.describe(
+        titulo='Título de la encuesta',
+        opciones='Opciones de la encuesta, separadas por comas (Ejemplo: Sí, No, Tal vez)',
+        duracion='Duración de la encuesta en segundos (obligatoria)'
+    )
+    @app_commands.checks.has_role(DAI_MEMBER_ROLE_ID)
+    async def voice_poll(interaction: discord.Interaction, titulo: str, duracion: int, opciones: str = None):
         voice_poll_cmd = VoicePollCommand(bot)
-        await voice_poll_cmd.voice_poll(interaction, title, option1, option2, option3, option4, option5,
-                                        option6, option7, option8, option9, option10)
+        await voice_poll_cmd.voice_poll(interaction, titulo, opciones, duracion)
+
+    @voice_poll.error
+    async def voice_poll_error(interaction: discord.Interaction, error):
+        if isinstance(error, app_commands.MissingRole):
+            await interaction.response.send_message("<:no:1288631410558767156> No tienes permisos para usar este comando.", ephemeral=True)
