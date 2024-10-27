@@ -69,7 +69,7 @@ class PollView(View):
 
     def create_embed(self):
         remaining_time = max(0, int(self.end_time - discord.utils.utcnow().timestamp())) if self.end_time else None
-        time_display = f'<a:online:1288631919352877097> Abierta - {remaining_time // 60}:{remaining_time % 60:02d}' if remaining_time else '<a:offline:1288631912180744205> Encuesta finalizada'
+        time_display = f'<a:online:1288631919352877097> Abierta - {remaining_time // 60}:{remaining_time % 60:02d}' if remaining_time else '<a:offline:1288631912180744205> Votación finalizada'
         total_votes = sum(data['count'] for data in self.votes.values())
         description = f'''
         ## Votación: {self.title}
