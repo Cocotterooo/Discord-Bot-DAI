@@ -52,7 +52,7 @@ class PollView(View):
 
             option_id = interaction.data['custom_id'].rsplit("_", 1)[0]  # Elimina el índice para obtener la opción original
             option_label = self.votes[option_id]['label']
-            print(f'{interaction.user} ha votado la opción: {option_label}')
+            print(f'Encuestas: {interaction.user} ha votado la opción: {option_label}')
 
             # Aumenta el voto en la opción seleccionada
             if option_id in self.votes:
@@ -103,18 +103,18 @@ class VoicePollCommand:
     async def voice_poll(self, interaction: discord.Interaction, title: str, options: str = None, duration: int = None):
         if not interaction.user.voice or not interaction.user.voice.channel:
             await interaction.response.send_message('<:no:1288631410558767156> Debes estar en un canal de voz para crear una encuesta.', ephemeral=True)
-            return
+            raise ValueError("El usuario no está en un canal de voz.")
 
         # Valida si las opciones están duplicadas, en caso de que haya opciones
         options_list = [opt.strip() for opt in options.split(',')] if options else None
         if options_list and len(options_list) != len(set(options_list)):  # Revisa si hay duplicados
             await interaction.response.send_message('<:no:1288631410558767156> No puedes tener opciones duplicadas en la encuesta.', ephemeral=True)
-            return
+            raise ValueError("Opciones duplicadas en la encuesta.")
 
         # Valida que la duración sea positiva
         if not duration or duration <= 0:
             await interaction.response.send_message('<:no:1288631410558767156> Debes proporcionar una duración válida para la encuesta.', ephemeral=True)
-            return
+            raise ValueError("Duración de la encuesta no válida.")
 
         # Crea la vista de botones con opciones y el canal de voz del autor
         view = PollView(title=title, options=options_list, author_voice_channel=interaction.user.voice.channel, duration=duration)
@@ -122,11 +122,14 @@ class VoicePollCommand:
         # Crea el embed inicial con el título de la encuesta y tiempo restante
         embed = view.create_embed()
         
-        # Cambiar de send_message a followup.send para asegurar que el mensaje se guarde correctamente
         await interaction.response.defer()  # Defer para evitar timeout en la respuesta inicial
-        message = await interaction.followup.send(embed=embed, view=view)
-        view.message = message  # Guarda el mensaje en la vista para que pueda actualizarse
-
+        try: 
+            message = await interaction.followup.send(embed=embed, view=view)
+            print(f'Encuestas: {interaction.user} ha creado una encuesta en el canal de voz {interaction.user.voice.channel}:\n-Título: {title}\n-Opciones: {"Sí, No, Abstención" if options == None else options}\n-Duración: {duration}s')
+            view.message = message  # Guarda el mensaje en la vista para que pueda actualizarse
+        except discord.HTTPException:
+            await interaction.response.send_message('<:no:1288631410558767156> Ocurrió un error al enviar la encuesta.', ephemeral=True)
+            raise ValueError("Error al enviar la encuesta.")
         # Actualizar el contador de tiempo mientras la encuesta está abierta
         while discord.utils.utcnow().timestamp() < view.end_time:
             await asyncio.sleep(1)  # Ahora se actualiza cada segundo
@@ -139,7 +142,7 @@ class VoicePollCommand:
         await view.on_timeout()
 
 
-def voice_poll_cmd(bot):
+def voice_poll_cmd(bot): # COMANDO
     @bot.tree.command(name='dai_voz_votacion', description='Crea una encuesta en la que solo los usuarios en tu canal de voz pueden votar.')
     @app_commands.describe(
         titulo='Título de la encuesta',
