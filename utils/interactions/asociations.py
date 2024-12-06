@@ -1,6 +1,31 @@
 import discord
 from discord import app_commands
-from config import ASOCIATION_ROLE_IDS, ADMIN_ROLE, spacelab_info_embed, motorsport_info_embed, ces_info_embed
+from config import ASOCIATION_ROLE_IDS, ADMIN_ROLE, spacelab_info_embed, motorsport_info_embed, ces_info_embed, ceeibis_info_embed
+
+
+def nuevo_ceeibis(bot):
+    @bot.tree.command(name="nuevo_ceeibis", description="Añadir rol de miembro de Spacelab")
+    @app_commands.checks.has_role(ASOCIATION_ROLE_IDS['ceeibis']['coord'])
+    async def nuevo_ceeibis(interaction: discord.Interaction, user: discord.Member):
+        await gestionar_rol(interaction, user, 'ceeibis', "añadir")
+
+    @nuevo_ceeibis.error
+    async def nuevo_ceeibis_error(interaction: discord.Interaction, error):
+        if isinstance(error, app_commands.MissingRole):
+            await interaction.response.send_message("<:no:1288631410558767156> No tienes permisos para usar este comando.", ephemeral=True) 
+
+
+def eliminar_ceeibis(bot):
+    @bot.tree.command(name="eliminar_ceeibis", description="Eliminar rol de miembro de Spacelab")
+    @app_commands.checks.has_role(ASOCIATION_ROLE_IDS['ceeibis']['coord'])
+    async def eliminar_ceeibis(interaction: discord.Interaction, user: discord.Member):
+        await gestionar_rol(interaction, user, 'ceeibis', "eliminar")
+
+    @eliminar_ceeibis.error
+    async def eliminar_ceeibis_error(interaction: discord.Interaction, error):
+        if isinstance(error, app_commands.MissingRole):
+            await interaction.response.send_message("<:no:1288631410558767156> No tienes permisos para usar este comando.", ephemeral=True) 
+
 
 
 def nuevo_spacelab(bot):
@@ -95,6 +120,22 @@ async def gestionar_rol(interaction: discord.Interaction, user, asociacion, acci
 
 
 # SETUP INFO OF ASOCIATIONS
+
+def setup_ceeibis(bot):
+    @bot.tree.command(name="setup_ceeibis", description="Enviar el embed de información de la categoría de SpaceLab")
+    @app_commands.describe(channel='La ID del chat donde se enviará el embed')
+    @app_commands.checks.has_role(ADMIN_ROLE)
+    async def send_main_embed(interaction: discord.Interaction, channel: discord.TextChannel):
+        """Slash Command que envía el embed principal al canal seleccionado"""
+        embed = ceeibis_info_embed()
+        await channel.send(embed=embed)
+        await interaction.response.send_message(f"<:correcto:1288631406452412428> Embed enviado a {channel.mention}", ephemeral=True)
+
+    @send_main_embed.error
+    async def send_main_embed_error(interaction: discord.Interaction, error):
+        if isinstance(error, app_commands.MissingRole):
+            await interaction.response.send_message("<:no:1288631410558767156> No tienes permisos para usar este comando.", ephemeral=True)
+
 
 def setup_spacelab(bot):
     @bot.tree.command(name="setup_spacelab", description="Enviar el embed de información de la categoría de SpaceLab")

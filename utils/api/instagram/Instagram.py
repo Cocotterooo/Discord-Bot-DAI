@@ -28,7 +28,6 @@ class InstagramAPI():
     async def get_post(self, post_id: int):
         url = f"https://graph.instagram.com/{post_id}?fields=id,like_count,comments_count,caption,media_type,media_url,thumbnail_url,permalink,timestamp&access_token={self.access_token}"
         response = requests.get(url)
-        print(response)
         if response.status_code == 200:
             media_data = response.json()
             return media_data

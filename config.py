@@ -24,6 +24,10 @@ VERIFIED_ROLE_ID = 1299781091451867146
 
 # Asociaciones:
 ASOCIATION_ROLE_IDS = {
+    'ceeibis': {
+        'coord': 1314547388006006814,
+        'member': 1314547662036664390
+        },
     'spacelab': {
         'coord': 1300181833081950299, 
         'member': 1300181978166988860
@@ -38,6 +42,10 @@ ASOCIATION_ROLE_IDS = {
         }
 }
 ASOCIATION_COMMANDS = {
+    'ceeibis': {
+        'nuevo': '/nuevo_ceeibis',
+        'eliminar': '/eliminar_ceeibis',
+        },
     'spacelab': {
         'nuevo': '/nuevo_spacelab',
         'eliminar': '/eliminar_spacelab',
@@ -195,6 +203,21 @@ def verification_embed(user: discord.User) -> discord.Embed:
     embed.set_footer(text='Delegación de Alumnos de Industriales - UVigo', icon_url='https://cdn.discordapp.com/emojis/1288628804276977735.webp?size=96&quality=lossless')
     return embed
 
+
+
+def ceeibis_info_embed() -> discord.Embed:
+    embed = discord.Embed(
+        description=f'''
+        ## <a:flecha:1290411623802208257> **¡Bienvenid@ a la categoría de CEEIBIS!**
+        ''',
+        color=dai_color()
+    )
+    embed.add_field(name='<:info:1288631394502709268> Configuración de la Categoría', value=f'> La categoría es totalemte configurable por el rol <@&{ASOCIATION_ROLE_IDS["ceeibis"]["coord"]}>', inline=False)
+    embed.add_field(name='<:entrar:1288631392070012960> Añadir nuevos Miembros', value=f'> Utiliza el comando `{ASOCIATION_COMMANDS["ceeibis"]["nuevo"]}`\n > Otorgará el rol <@&{ASOCIATION_ROLE_IDS["ceeibis"]["member"]}> al usuario', inline=False)
+    embed.add_field(name='<:salir:1288975442828726374> Eliminar Miembros', value=f'> Utiliza el comando `{ASOCIATION_COMMANDS["ceeibis"]["eliminar"]}`\n > Eliminará el rol <@&{ASOCIATION_ROLE_IDS["ceeibis"]["member"]}> del usuario', inline=False)
+    embed.set_image(url='https://i.imgur.com/8GkOfv1.png')
+    embed.set_footer(text='Delegación de Alumnos de Industriales - UVigo', icon_url='https://cdn.discordapp.com/emojis/1288628804276977735.webp?size=96&quality=lossless')
+    return embed
 
 def spacelab_info_embed() -> discord.Embed:
     embed = discord.Embed(

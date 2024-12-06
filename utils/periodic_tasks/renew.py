@@ -10,8 +10,8 @@ from config import instagram_embed, INSTAGRAM_DAI_CHANNEL
 
 async def renew_all_likes_comments_task(posts: Post, interval: int, discord_client, supabase: Client, chanel_id: int):
     while interval > 0:
-        await posts.renew_all_likes_comments_db()  # Esto renovará los mensajes de la DB
         try:
+            await posts.renew_all_likes_comments_db()  # Esto renovará los mensajes de la DB
             # Obtiene la data de las publicaciones que cambiaron sus likes o comentarios
             response = supabase.rpc('get_discrepancies').execute()
             print('🔃Actualizando likes y comentarios en Discord')
