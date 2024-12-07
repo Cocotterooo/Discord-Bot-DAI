@@ -32,8 +32,8 @@ async def create_ticket(interaction: discord.Interaction):
     ticket_channel = await category.create_text_channel(name=f"🎫⦙{interaction.user.name}")
 
     await ticket_channel.set_permissions(guild.default_role, read_messages=False)
-    await ticket_channel.set_permissions(interaction.user, read_messages=True, send_messages=True)
-    await ticket_channel.set_permissions(guild.get_role(DAI_MEMBER_ROLE_ID), read_messages=True, send_messages=True)
+    await ticket_channel.set_permissions(interaction.user, read_messages=True, send_messages=True, attach_files=True)
+    await ticket_channel.set_permissions(guild.get_role(DAI_MEMBER_ROLE_ID), read_messages=True, send_messages=True, attach_files=True)
 
     embed = tickets_embed(interaction.user)
     await ticket_channel.send(interaction.user.mention, embed=embed, view=CloseTicketView())
@@ -55,8 +55,8 @@ async def verify(interaction: discord.Interaction):
     verify_channel = await category.create_text_channel(name=f"✅⦙{interaction.user.name}")
 
     await verify_channel.set_permissions(guild.default_role, read_messages=False)
-    await verify_channel.set_permissions(interaction.user, read_messages=True, send_messages=True)
-    await verify_channel.set_permissions(guild.get_role(DAI_MEMBER_ROLE_ID), read_messages=True, send_messages=True)
+    await verify_channel.set_permissions(interaction.user, read_messages=True, send_messages=True, attach_files=True)
+    await verify_channel.set_permissions(guild.get_role(DAI_MEMBER_ROLE_ID), read_messages=True, send_messages=True, attach_files=True)
 
     embed = verification_embed(interaction.user)
     await verify_channel.send(interaction.user.mention, embed=embed, view=VerificationView(interaction.user))
