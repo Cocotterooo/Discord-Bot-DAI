@@ -75,28 +75,41 @@ async def renew_likes_comments_sended_messages(supabase: Client, discord_client:
         
     print("🔃 Actualizando likes y comentarios de los mensajes enviados ❌ Deshabilitado")'''
 
-async def update_sended_messages(discord_client, data: list, channel_id: int):
-    # Consulta SQL para verificar discrepancias
+import asyncio
+
+async def update_sended_messages(discord_client, data: list, channel_id: int, max_concurrent_tasks: int = 5):
     print("🔃Actualizando mensajes enviados")
-    for i in data:
-        try:
-            channel = discord_client.get_channel(channel_id)
-            message = await channel.fetch_message(i['message_id'])
-            new_embed = instagram_embed(permalink=i['permalink'], 
-                                        likes=i['likes_count'], 
-                                        comments=i['comments_count'], 
-                                        post_id=i['id'], 
-                                        caption=i['caption'], 
-                                        media_url=i['media_url'],
-                                        date_published=i['date_published'])
-            await message.edit(embed=new_embed)
-            print(f"💚Mensaje {i['message_id']} actualizado correctamente.")
-        except discord.NotFound:
-            print(f"❌Mensaje {i['message_id']} no encontrado.")
-        except discord.Forbidden:
-            print("No tengo permisos para editar el mensaje.")
-        except discord.HTTPException as e:
-            print(f"❌Error: update_sended_messages() - al editar el mensaje: {e}")
+    
+    semaphore = asyncio.Semaphore(max_concurrent_tasks)  # Límite de tareas concurrentes
+
+    async def update_message(entry):
+        async with semaphore:  # Limita el número de tareas activas al mismo tiempo para no superar el límite de la API
+            try:
+                channel = discord_client.get_channel(channel_id)
+                message = await channel.fetch_message(entry['message_id'])
+                new_embed = instagram_embed(
+                    permalink=entry['permalink'], 
+                    likes=entry['likes_count'], 
+                    comments=entry['comments_count'], 
+                    post_id=entry['id'], 
+                    caption=entry['caption'], 
+                    media_url=entry['media_url'],
+                    date_published=entry['date_published']
+                )
+                await message.edit(embed=new_embed)
+                print(f"💚Mensaje {entry['message_id']} actualizado correctamente.")
+            except discord.NotFound:
+                print(f"❌Mensaje {entry['message_id']} no encontrado.")
+            except discord.Forbidden:
+                print("No tengo permisos para editar el mensaje.")
+            except discord.HTTPException as e:
+                print(f"❌Error: update_sended_messages() - al editar el mensaje: {e}")
+
+    # Ejecutar tareas concurrentemente con control
+    await asyncio.gather(*(update_message(i) for i in data))
+    # Ejecutar todas las tareas concurrentemente
+    await asyncio.gather(*(update_message(i) for i in data))
+
 
 
 async def check_new_post_task(instagram:InstagramAPI, posts: Post, dc_insta_msg, interval: int):

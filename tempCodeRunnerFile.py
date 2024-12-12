@@ -9,7 +9,7 @@ import io
 from utils.welcome_image import generate_welcome_image
 from utils.api.instagram.Instagram import InstagramAPI 
 from utils.db.authentication import supabase_autenticated
-from utils.periodic_tasks.renew import renew_all_likes_comments_task, renew_media_url_task, check_new_post_task
+from utils.periodic_tasks.autoupdate_messages import renew_all_likes_comments_task, renew_media_url_task, check_new_post_task
 from utils.db.Posts import Post
 from utils.db.Discord_instagram_messsage import Dc_insta_msg
 from utils.interactions.instagram_commands import instagram_send_command
