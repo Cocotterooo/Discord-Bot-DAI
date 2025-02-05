@@ -1,0 +1,64 @@
+{
+    "2025-02-05": [
+        {
+            "title": "test1",
+            "duration": 15,
+            "author": {
+                "id": 1336656919821287527,
+                "name": "🔊⦙ cocoterooo"
+            },
+            "options": {
+                "A favor": {
+                    "label": "A favor",
+                    "count": 1
+                },
+                "En contra": {
+                    "label": "En contra",
+                    "count": 0
+                },
+                "Abstención": {
+                    "label": "Abstención",
+                    "count": 0
+                }
+            },
+            "total_votes": 1,
+            "votes": [
+                {
+                    "user_id": 789591730907381760,
+                    "name": "Manuel Medina",
+                    "option": "A favor"
+                }
+            ]
+        },
+        {
+            "title": "test2",
+            "duration": 15,
+            "author": {
+                "id": 1336656919821287527,
+                "name": "🔊⦙ cocoterooo"
+            },
+            "options": {
+                "A favor": {
+                    "label": "A favor",
+                    "count": 0
+                },
+                "En contra": {
+                    "label": "En contra",
+                    "count": 1
+                },
+                "Abstención": {
+                    "label": "Abstención",
+                    "count": 0
+                }
+            },
+            "total_votes": 1,
+            "votes": [
+                {
+                    "user_id": 789591730907381760,
+                    "name": "Manuel Medina",
+                    "option": "En contra"
+                }
+            ]
+        }
+    ]
+}
