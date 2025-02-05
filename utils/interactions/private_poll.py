@@ -9,7 +9,7 @@ class PollView(View):
         super().__init__(timeout=duration)
         
         # Opciones y colores predefinidos
-        default_options = ['Sí', 'No', 'Abstención']
+        default_options = ['A favor', 'En contra', 'Abstención']
         default_styles = [discord.ButtonStyle.success, discord.ButtonStyle.danger, discord.ButtonStyle.primary]
 
         # Usa opciones y estilos predefinidos si no se dan opciones válidas
@@ -29,6 +29,14 @@ class PollView(View):
         self.voted_users = set()
         self.duration = duration
         self.end_time = discord.utils.utcnow().timestamp() + duration
+        self.poll_log = {
+            'title': title,
+            'durarion': self.duration,
+            'author': self., 
+            'options': self.votes,
+            'total_votes': 0,
+            'votes': []
+        }
 
         # Crear botones para cada opción, añadiendo índice al custom_id para evitar duplicados
         for idx, option in enumerate(options):
@@ -62,11 +70,19 @@ class PollView(View):
                 # Actualiza el embed con los nuevos resultados
                 await self.message.edit(embed=self.create_embed())
                 await interaction.response.send_message(f'<:correcto:1288631406452412428> Has votado la opción: **{option_label}**', ephemeral=True)
+                self.poll_log['votes'].append(
+                    {'user': interaction.user, 
+                     'name': interaction.user.nick if interaction.user.nick else '-', 
+                     'option': option_label
+                    }
+                )
+                return
             else:
-                await interaction.response.send_message("Opción no válida.", ephemeral=True)
+                await interaction.response.send_message("Opción no válida.", ephemeral = True)
+                return
         else:
             await interaction.response.send_message('<:no:1288631410558767156> Debes estar en el mismo canal de voz para votar.', ephemeral=True)
-
+            return None
     def create_embed(self):
         remaining_time = max(0, int(self.end_time - discord.utils.utcnow().timestamp())) if self.end_time else None
         time_display = f'<a:online:1288631919352877097> Abierta - {remaining_time // 60}:{remaining_time % 60:02d}' if remaining_time else '<a:offline:1288631912180744205> Votación finalizada'
@@ -94,7 +110,7 @@ class PollView(View):
         for child in self.children:
             child.disabled = True  # Desactiva todos los botones al finalizar la encuesta
         await self.message.edit(embed=self.create_embed(), view=self)
-
+        print(self.poll_log)
 
 class VoicePollCommand:
     def __init__(self, bot):
@@ -125,7 +141,7 @@ class VoicePollCommand:
         await interaction.response.defer()  # Defer para evitar timeout en la respuesta inicial
         try: 
             message = await interaction.followup.send(embed=embed, view=view)
-            print(f'Encuestas: {interaction.user} ha creado una encuesta en el canal de voz {interaction.user.voice.channel}:\n-Título: {title}\n-Opciones: {"Sí, No, Abstención" if options == None else options}\n-Duración: {duration}s')
+            print(f'Encuestas: {interaction.user} ha creado una encuesta en el canal de voz {interaction.user.voice.channel}:\n-Título: {title}\n-Opciones: {"A favor, En contra, Abstención" if options == None else options}\n-Duración: {duration}s')
             view.message = message  # Guarda el mensaje en la vista para que pueda actualizarse
         except discord.HTTPException:
             await interaction.response.send_message('<:no:1288631410558767156> Ocurrió un error al enviar la encuesta.', ephemeral=True)

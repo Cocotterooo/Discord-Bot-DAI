@@ -84,11 +84,19 @@ async def create_or_update_channel(
             )
     else:
         # Si no tiene un canal, lo creamos
-        channel = await interaction.guild.create_voice_channel(
-            name=channel_name,
-            category=category,
-            user_limit=user_limit,
-        )
+        try:
+            channel = await interaction.guild.create_voice_channel(
+                name=channel_name,
+                category=category,
+                user_limit=user_limit,
+            )
+        except Exception as e:
+            await interaction.response.send_message(
+                "<:no:1288631410558767156> No se pudo crear el canal de voz.",
+                ephemeral=True,
+            )
+            print(f"❌ Error al crear el canal de voz para {interaction.user.name}\n {e}")
+            return
 
         user_data = supabase.table('users').select('id').eq('id', user_id).execute()
 
