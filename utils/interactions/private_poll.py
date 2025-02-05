@@ -5,7 +5,7 @@ import asyncio
 from config import DAI_MEMBER_ROLE_ID
 
 class PollView(View):
-    def __init__(self, title, options, author_voice_channel, duration):
+    def __init__(self, title, options, poll_author, duration):
         super().__init__(timeout=duration)
         
         # Opciones y colores predefinidos
@@ -24,7 +24,7 @@ class PollView(View):
             styles = [discord.ButtonStyle.primary] * len(options)
 
         self.votes = {option: {'label': option, 'count': 0} for option in options}
-        self.author_voice_channel = author_voice_channel
+        self.poll_author = poll_author
         self.title = title
         self.voted_users = set()
         self.duration = duration
@@ -32,7 +32,7 @@ class PollView(View):
         self.poll_log = {
             'title': title,
             'durarion': self.duration,
-            'author': self., 
+            'author': self.poll_author, 
             'options': self.votes,
             'total_votes': 0,
             'votes': []
@@ -53,7 +53,7 @@ class PollView(View):
             return
         
         # Verifica si el usuario está en el mismo canal de voz que el autor de la encuesta
-        if interaction.user.voice and interaction.user.voice.channel.id == self.author_voice_channel.id:
+        if interaction.user.voice and interaction.user.voice.channel.id == self.poll_author.id:
             if interaction.user.id in self.voted_users:
                 await interaction.response.send_message('<:no:1288631410558767156> Ya has votado en esta encuesta.', ephemeral=True)
                 return
@@ -133,7 +133,7 @@ class VoicePollCommand:
             raise ValueError("Duración de la encuesta no válida.")
 
         # Crea la vista de botones con opciones y el canal de voz del autor
-        view = PollView(title=title, options=options_list, author_voice_channel=interaction.user.voice.channel, duration=duration)
+        view = PollView(title=title, options=options_list, poll_author=interaction.user.voice.channel, duration=duration)
 
         # Crea el embed inicial con el título de la encuesta y tiempo restante
         embed = view.create_embed()
