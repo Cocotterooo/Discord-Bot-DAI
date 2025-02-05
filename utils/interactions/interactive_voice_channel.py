@@ -75,9 +75,8 @@ async def create_or_update_channel(
         return
 
     try:
-        channel = await interaction.guild.create_voice_channel(
+        channel = await category.create_voice_channel(
             name=channel_name,
-            category=category,
             user_limit=user_limit
         )
     except Exception as e:
