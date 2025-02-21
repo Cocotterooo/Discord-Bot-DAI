@@ -145,7 +145,7 @@ async def on_member_join(member: discord.Member):
 
     channel = client.get_channel(WELCOME_CHANNEL)
     image_binary = generate_welcome_image(
-        nombre_usuario, avatar_url, "assets/tema_claro_recortado.png"
+        nombre_usuario, avatar_url, "assets/tema_spp.png"
     )
     if image_binary is None:
         print(f"Ocurrió un error al generar la imagen de Bienvenida de {nombre_usuario}")
@@ -167,7 +167,7 @@ async def welcome(interaction: discord.Interaction):
 
     channel = client.get_channel(WELCOME_CHANNEL)
     image_binary = generate_welcome_image(
-        nombre_usuario, avatar_url, "assets/tema_claro_recortado.png"
+        nombre_usuario, avatar_url, "assets/tema_spp.png"
     )
     if image_binary is None:
         print(f"Ocurrió un error al generar la imagen de Bienvenida de {nombre_usuario}")

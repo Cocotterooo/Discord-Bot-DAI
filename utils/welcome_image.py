@@ -33,7 +33,7 @@ def make_round_avatar(avatar_image, size=(200, 200)):
 
 
 #* Función para añadir un borde circular al avatar
-def add_border_avatar(avatar_image, border_size=6, border_color=(0, 172, 226)):
+def add_border_avatar(avatar_image, border_size=6, border_color=(255, 214, 91)):
     avatar_with_border = Image.new("RGBA", (avatar_image.width + border_size * 2, avatar_image.height + border_size * 2), (0, 0, 0, 0))
     draw = ImageDraw.Draw(avatar_with_border)
     draw.ellipse([0, 0, avatar_with_border.width, avatar_with_border.height], fill=border_color)
@@ -61,17 +61,17 @@ def write_welcome_text(draw, nombre_usuario, font, base_image_height, x_start=25
     y_start = y_centered
 
     # Escribir los textos
-    draw.text((x_start, y_start), text_bienvenido, (0, 172, 226), font=font)
+    draw.text((x_start, y_start), text_bienvenido, (255, 214, 91), font=font)
     text_bienvenido_width = font.getbbox(text_bienvenido)[2]
 
     # Escribir el nombre del usuario
     x_new = x_start + text_bienvenido_width
-    draw.text((x_new, y_start), nombre_usuario, (0, 125, 164), font=font)
+    draw.text((x_new, y_start), nombre_usuario, (224, 168, 0), font=font)
     text_usuario_width = font.getbbox(nombre_usuario)[2]
 
     # Escribir el signo de exclamación
     x_new += text_usuario_width
-    draw.text((x_new, y_start), text_exclamacion, (0, 172, 226), font=font)
+    draw.text((x_new, y_start), text_exclamacion, (255, 214, 91), font=font)
 
 
 #* Función principal para generar la imagen de bienvenida
