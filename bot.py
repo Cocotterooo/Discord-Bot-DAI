@@ -155,7 +155,8 @@ async def on_member_join(member: discord.Member):
             f"<:entrar:1288631392070012960> {member.mention} ¡Bienvenid@ a la "
             "**Comunidad Oficial** de la **EEI**! 🎉 \n"
             "> <:verificado:1288628715982553188> Si eres estudiante en la **EEI verifica tu cuenta** en "
-            "<#1299775062215229460>\n-#       **Delegación de Alumnos** EEI - Uvigo"
+            "<#1299775062215229460>\n> ¡Inscríbete a los torneos del patrón en <#1288290532958928966>!\n"
+            "-# <:dai:1288623399672741930> **Delegación de Alumnos** EEI - Uvigo"
         )
 
 
@@ -174,8 +175,11 @@ async def welcome(interaction: discord.Interaction):
     else:
         await channel.send(file=discord.File(fp=image_binary, filename="bienvenida.png"))
         await channel.send(
-            f"<:entrar:1288631392070012960> ¡Bienvenid@ a la **Comunidad Oficial** de la "
-            "**EEI**! 🎉\n-#       **Delegación de Alumnos** EEI - Uvigo"
+            f"<:entrar:1288631392070012960> **{nombre_usuario}** ¡Bienvenid@ a la "
+            "**Comunidad Oficial** de la **EEI**! 🎉 \n"
+            "> <:verificado:1288628715982553188> Si eres estudiante en la **EEI verifica tu cuenta** en "
+            "<#1299775062215229460>\n> ¡Inscríbete a los torneos del patrón en <#1288290532958928966>!\n"
+            "-# <:dai:1288623399672741930> **Delegación de Alumnos** EEI - Uvigo"
         )
 
 
