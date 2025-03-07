@@ -1,64 +1,595 @@
 {
-    "2025-02-05": [
-        {
-            "title": "test1",
-            "duration": 15,
-            "author": {
-                "id": 1336656919821287527,
-                "name": "🔊⦙ cocoterooo"
-            },
-            "options": {
-                "A favor": {
-                    "label": "A favor",
-                    "count": 1
+    "2025-03-07": {
+        "02:18": [
+            {
+                "title": "holaaa",
+                "timestamp": "2025-03-07 02:18:06",
+                "duration": 30,
+                "author": {
+                    "id": 1347326853475467335,
+                    "name": "🔊⦙ cocoterooo"
                 },
-                "En contra": {
-                    "label": "En contra",
-                    "count": 0
+                "options": {
+                    "A favor": {
+                        "label": "A favor",
+                        "count": 0
+                    },
+                    "En contra": {
+                        "label": "En contra",
+                        "count": 1
+                    },
+                    "Abstención": {
+                        "label": "Abstención",
+                        "count": 0
+                    }
                 },
-                "Abstención": {
-                    "label": "Abstención",
-                    "count": 0
-                }
-            },
-            "total_votes": 1,
-            "votes": [
-                {
-                    "user_id": 789591730907381760,
-                    "name": "Manuel Medina",
-                    "option": "A favor"
-                }
-            ]
-        },
-        {
-            "title": "test2",
-            "duration": 15,
-            "author": {
-                "id": 1336656919821287527,
-                "name": "🔊⦙ cocoterooo"
-            },
-            "options": {
-                "A favor": {
-                    "label": "A favor",
-                    "count": 0
+                "total_votes": 1,
+                "votes": [
+                    {
+                        "user_id": 789591730907381760,
+                        "name": "Manuel Medina",
+                        "option": "En contra"
+                    }
+                ]
+            }
+        ],
+        "02:33": [
+            {
+                "title": "holaaa",
+                "timestamp": "2025-03-07 02:33:30",
+                "duration": 30,
+                "poll_info": {
+                    "author": "Cocoterooo",
+                    "channel_id": 1347326853475467335,
+                    "channel": "🔊⦙ cocoterooo"
                 },
-                "En contra": {
-                    "label": "En contra",
-                    "count": 1
+                "options": {
+                    "A favor": {
+                        "label": "A favor",
+                        "count": 0
+                    },
+                    "En contra": {
+                        "label": "En contra",
+                        "count": 1
+                    },
+                    "Abstención": {
+                        "label": "Abstención",
+                        "count": 0
+                    }
                 },
-                "Abstención": {
-                    "label": "Abstención",
-                    "count": 0
-                }
+                "total_votes": 1,
+                "votes": [
+                    {
+                        "user_id": 789591730907381760,
+                        "name": "Manuel Medina",
+                        "nick_name": "Cocoterooo",
+                        "option": "En contra"
+                    }
+                ]
+            }
+        ],
+        "02:34": [
+            {
+                "title": "holaaa",
+                "timestamp": "2025-03-07 02:34:38",
+                "duration": 30,
+                "poll_info": {
+                    "author": "Cocoterooo",
+                    "channel_id": 1347326853475467335,
+                    "channel": "🔊⦙ cocoterooo"
+                },
+                "options": {
+                    "A favor": {
+                        "label": "A favor",
+                        "count": 1
+                    },
+                    "En contra": {
+                        "label": "En contra",
+                        "count": 0
+                    },
+                    "Abstención": {
+                        "label": "Abstención",
+                        "count": 0
+                    }
+                },
+                "total_votes": 1,
+                "votes": [
+                    {
+                        "user_id": 789591730907381760,
+                        "name": "Manuel Medina",
+                        "nick_name": "Cocoterooo",
+                        "option": "A favor"
+                    }
+                ]
+            }
+        ],
+        "02:36": [
+            {
+                "title": "holaaa",
+                "timestamp": "2025-03-07 02:36:19",
+                "duration": 30,
+                "poll_info": {
+                    "author": "Cocoterooo",
+                    "channel_id": 1347326853475467335,
+                    "channel": "🔊⦙ cocoterooo"
+                },
+                "options": {
+                    "A favor": {
+                        "label": "A favor",
+                        "count": 0
+                    },
+                    "En contra": {
+                        "label": "En contra",
+                        "count": 1
+                    },
+                    "Abstención": {
+                        "label": "Abstención",
+                        "count": 0
+                    }
+                },
+                "total_votes": 1,
+                "votes": [
+                    {
+                        "user_id": 789591730907381760,
+                        "name": "Manuel Medina",
+                        "nick_name": "Cocoterooo",
+                        "option": "En contra"
+                    }
+                ]
+            }
+        ],
+        "02:38": [
+            {
+                "title": "holaaa",
+                "timestamp": "2025-03-07 02:38:16",
+                "duration": 30,
+                "poll_info": {
+                    "author": "Cocoterooo",
+                    "channel_id": 1347326853475467335,
+                    "channel": "🔊⦙ cocoterooo"
+                },
+                "options": {
+                    "A favor": {
+                        "label": "A favor",
+                        "count": 0
+                    },
+                    "En contra": {
+                        "label": "En contra",
+                        "count": 1
+                    },
+                    "Abstención": {
+                        "label": "Abstención",
+                        "count": 0
+                    }
+                },
+                "total_votes": 1,
+                "votes": [
+                    {
+                        "user_id": 789591730907381760,
+                        "name": "Manuel Medina",
+                        "nick_name": "Cocoterooo",
+                        "option": "En contra"
+                    }
+                ]
+            }
+        ],
+        "02:39": [
+            {
+                "title": "holaaa",
+                "timestamp": "2025-03-07 02:39:05",
+                "duration": 30,
+                "poll_info": {
+                    "author": "Cocoterooo",
+                    "channel_id": 1347326853475467335,
+                    "channel": "🔊⦙ cocoterooo"
+                },
+                "options": {
+                    "A favor": {
+                        "label": "A favor",
+                        "count": 1
+                    },
+                    "En contra": {
+                        "label": "En contra",
+                        "count": 0
+                    },
+                    "Abstención": {
+                        "label": "Abstención",
+                        "count": 0
+                    }
+                },
+                "total_votes": 1,
+                "votes": [
+                    {
+                        "user_id": 789591730907381760,
+                        "name": "Manuel Medina",
+                        "nick_name": "Cocoterooo",
+                        "option": "A favor"
+                    }
+                ]
+            }
+        ],
+        "02:45": [
+            {
+                "title": "holaaa",
+                "timestamp": "2025-03-07 02:45:03",
+                "duration": 30,
+                "poll_info": {
+                    "author": "Cocoterooo",
+                    "channel_id": 1347326853475467335,
+                    "channel": "🔊⦙ cocoterooo"
+                },
+                "options": {
+                    "A favor": {
+                        "label": "A favor",
+                        "count": 0
+                    },
+                    "En contra": {
+                        "label": "En contra",
+                        "count": 1
+                    },
+                    "Abstención": {
+                        "label": "Abstención",
+                        "count": 0
+                    }
+                },
+                "total_votes": 1,
+                "votes": [
+                    {
+                        "user_id": 789591730907381760,
+                        "name": "Manuel Medina",
+                        "nick_name": "Cocoterooo",
+                        "option": "En contra"
+                    }
+                ]
+            }
+        ],
+        "02:51": [
+            {
+                "title": "holaaa",
+                "timestamp": "2025-03-07 02:51:21",
+                "duration": 10,
+                "poll_info": {
+                    "author": "Cocoterooo",
+                    "channel_id": 1347326853475467335,
+                    "channel": "🔊⦙ cocoterooo"
+                },
+                "options": {
+                    "A favor": {
+                        "label": "A favor",
+                        "count": 1
+                    },
+                    "En contra": {
+                        "label": "En contra",
+                        "count": 0
+                    },
+                    "Abstención": {
+                        "label": "Abstención",
+                        "count": 0
+                    }
+                },
+                "total_votes": 1,
+                "votes": [
+                    {
+                        "user_id": 789591730907381760,
+                        "name": "Manuel Medina",
+                        "nick_name": "Cocoterooo",
+                        "option": "A favor"
+                    }
+                ]
+            }
+        ],
+        "02:59": [
+            {
+                "title": "holaaa",
+                "timestamp": "2025-03-07 02:59:30",
+                "duration": 10,
+                "poll_info": {
+                    "author": "Cocoterooo",
+                    "channel_id": 1347326853475467335,
+                    "channel": "🔊⦙ cocoterooo"
+                },
+                "options": {
+                    "A favor": {
+                        "label": "A favor",
+                        "count": 0
+                    },
+                    "En contra": {
+                        "label": "En contra",
+                        "count": 1
+                    },
+                    "Abstención": {
+                        "label": "Abstención",
+                        "count": 0
+                    }
+                },
+                "total_votes": 1,
+                "votes": [
+                    {
+                        "user_id": 789591730907381760,
+                        "name": "Manuel Medina",
+                        "nick_name": "Cocoterooo",
+                        "option": "En contra"
+                    }
+                ]
+            }
+        ],
+        "03:00": [
+            {
+                "title": "holaaa",
+                "timestamp": "2025-03-07 03:00:45",
+                "duration": 10,
+                "poll_info": {
+                    "author": "Cocoterooo",
+                    "channel_id": 1347326853475467335,
+                    "channel": "🔊⦙ cocoterooo"
+                },
+                "options": {
+                    "A favor": {
+                        "label": "A favor",
+                        "count": 1
+                    },
+                    "En contra": {
+                        "label": "En contra",
+                        "count": 0
+                    },
+                    "Abstención": {
+                        "label": "Abstención",
+                        "count": 0
+                    }
+                },
+                "total_votes": 1,
+                "votes": [
+                    {
+                        "user_id": 789591730907381760,
+                        "name": "Manuel Medina",
+                        "nick_name": "Cocoterooo",
+                        "option": "A favor"
+                    }
+                ]
+            }
+        ],
+        "03:03": [
+            {
+                "title": "holaaa",
+                "timestamp": "2025-03-07 03:03:06",
+                "duration": 10,
+                "poll_info": {
+                    "author": "Cocoterooo",
+                    "channel_id": 1347326853475467335,
+                    "channel": "🔊⦙ cocoterooo"
+                },
+                "options": {
+                    "A favor": {
+                        "label": "A favor",
+                        "count": 0
+                    },
+                    "En contra": {
+                        "label": "En contra",
+                        "count": 0
+                    },
+                    "Abstención": {
+                        "label": "Abstención",
+                        "count": 1
+                    }
+                },
+                "total_votes": 1,
+                "votes": [
+                    {
+                        "user_id": 789591730907381760,
+                        "name": "Manuel Medina",
+                        "nick_name": "Cocoterooo",
+                        "option": "Abstención"
+                    }
+                ]
             },
-            "total_votes": 1,
-            "votes": [
-                {
-                    "user_id": 789591730907381760,
-                    "name": "Manuel Medina",
-                    "option": "En contra"
-                }
-            ]
-        }
-    ]
+            {
+                "title": "holaaa",
+                "timestamp": "2025-03-07 03:03:51",
+                "duration": 5,
+                "poll_info": {
+                    "author": "Cocoterooo",
+                    "channel_id": 1347326853475467335,
+                    "channel": "🔊⦙ cocoterooo"
+                },
+                "options": {
+                    "A favor": {
+                        "label": "A favor",
+                        "count": 0
+                    },
+                    "En contra": {
+                        "label": "En contra",
+                        "count": 0
+                    },
+                    "Abstención": {
+                        "label": "Abstención",
+                        "count": 1
+                    }
+                },
+                "total_votes": 1,
+                "votes": [
+                    {
+                        "user_id": 789591730907381760,
+                        "name": "Manuel Medina",
+                        "nick_name": "Cocoterooo",
+                        "option": "Abstención"
+                    }
+                ]
+            }
+        ],
+        "03:06": [
+            {
+                "title": "holaaa",
+                "timestamp": "2025-03-07 03:06:48",
+                "duration": 5,
+                "poll_info": {
+                    "author": "Cocoterooo",
+                    "channel_id": 1347326853475467335,
+                    "channel": "🔊⦙ cocoterooo"
+                },
+                "options": {
+                    "A favor": {
+                        "label": "A favor",
+                        "count": 0
+                    },
+                    "En contra": {
+                        "label": "En contra",
+                        "count": 0
+                    },
+                    "Abstención": {
+                        "label": "Abstención",
+                        "count": 1
+                    }
+                },
+                "total_votes": 1,
+                "votes": [
+                    {
+                        "user_id": 789591730907381760,
+                        "name": "Manuel Medina",
+                        "nick_name": "Cocoterooo",
+                        "option": "Abstención"
+                    }
+                ]
+            }
+        ],
+        "03:09": [
+            {
+                "title": "holaaa",
+                "timestamp": "2025-03-07 03:09:57",
+                "duration": 5,
+                "poll_info": {
+                    "author": "Cocoterooo",
+                    "channel_id": 1347326853475467335,
+                    "channel": "🔊⦙ cocoterooo"
+                },
+                "options": {
+                    "A favor": {
+                        "label": "A favor",
+                        "count": 1
+                    },
+                    "En contra": {
+                        "label": "En contra",
+                        "count": 0
+                    },
+                    "Abstención": {
+                        "label": "Abstención",
+                        "count": 0
+                    }
+                },
+                "total_votes": 1,
+                "votes": [
+                    {
+                        "user_id": 789591730907381760,
+                        "name": "Manuel Medina",
+                        "nick_name": "Cocoterooo",
+                        "option": "A favor"
+                    }
+                ]
+            }
+        ],
+        "03:12": [
+            {
+                "title": "holaaa",
+                "timestamp": "2025-03-07 03:12:42",
+                "duration": 5,
+                "poll_info": {
+                    "author": "Cocoterooo",
+                    "channel_id": 1347326853475467335,
+                    "channel": "🔊⦙ cocoterooo"
+                },
+                "options": {
+                    "A favor": {
+                        "label": "A favor",
+                        "count": 1
+                    },
+                    "En contra": {
+                        "label": "En contra",
+                        "count": 0
+                    },
+                    "Abstención": {
+                        "label": "Abstención",
+                        "count": 0
+                    }
+                },
+                "total_votes": 1,
+                "votes": [
+                    {
+                        "user_id": 789591730907381760,
+                        "name": "Manuel Medina",
+                        "nick_name": "Cocoterooo",
+                        "option": "A favor"
+                    }
+                ]
+            }
+        ],
+        "03:19": [
+            {
+                "title": "holaaa",
+                "timestamp": "2025-03-07 03:19:43",
+                "duration": 5,
+                "poll_info": {
+                    "author": "Cocoterooo",
+                    "channel_id": 1347326853475467335,
+                    "channel": "🔊⦙ cocoterooo"
+                },
+                "options": {
+                    "A favor": {
+                        "label": "A favor",
+                        "count": 1
+                    },
+                    "En contra": {
+                        "label": "En contra",
+                        "count": 0
+                    },
+                    "Abstención": {
+                        "label": "Abstención",
+                        "count": 0
+                    }
+                },
+                "total_votes": 1,
+                "votes": [
+                    {
+                        "user_id": 789591730907381760,
+                        "name": "Manuel Medina",
+                        "nick_name": "Cocoterooo",
+                        "option": "A favor"
+                    }
+                ]
+            }
+        ],
+        "03:20": [
+            {
+                "title": "holaaa",
+                "timestamp": "2025-03-07 03:20:39",
+                "duration": 5,
+                "poll_info": {
+                    "author": "Cocoterooo",
+                    "channel_id": 1347326853475467335,
+                    "channel": "🔊⦙ cocoterooo"
+                },
+                "options": {
+                    "A favor": {
+                        "label": "A favor",
+                        "count": 0
+                    },
+                    "En contra": {
+                        "label": "En contra",
+                        "count": 1
+                    },
+                    "Abstención": {
+                        "label": "Abstención",
+                        "count": 0
+                    }
+                },
+                "total_votes": 1,
+                "votes": [
+                    {
+                        "user_id": 789591730907381760,
+                        "name": "Manuel Medina",
+                        "nick_name": "Cocoterooo",
+                        "option": "En contra"
+                    }
+                ]
+            }
+        ]
+    }
 }
